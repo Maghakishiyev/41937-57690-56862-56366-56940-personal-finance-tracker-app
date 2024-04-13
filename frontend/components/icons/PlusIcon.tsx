@@ -6,7 +6,7 @@ type PlusIconProps = {
 export default function PlusIcon({ className = "w-6 h-6" }: PlusIconProps) {
   return (
     <svg
-      className={className} 
+      className={className}
       width="24"
       height="24"
       viewBox="0 0 24 24"

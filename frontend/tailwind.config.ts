@@ -21,7 +21,8 @@ const config: Config = {
         "custom-black": "#070707",
         "custom-white": "#FEFCFB",
         "custom-verdigris": "#28AFB0",
-        "custom-green": "748067",
+        "custom-green": "#748067",
+        'custom-gray': 'rgba(125, 131, 149, 0.4)',
         "custom-bg": "#DFE7F3",
       },
       spacing: {
