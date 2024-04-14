@@ -1,29 +1,73 @@
 "use client"
-import { useState } from "react"
+import { useEffect, useState } from "react"
 import Image from "next/image"
 import img from "@/public/Component3.png"
 import img2 from "@/public/statistics.png"
 import EnvelopeIcon from "@/components/icons/EnvelopeIcon"
 import UserAvatarIcon from "@/public/UserAvatar.png"
 import LockClosedIcon from "@/components/icons/LockClosedIcon"
-
-
+import { signIn } from "./api"
+import { useRouter } from "next/navigation"
 
 const LoginPage = () => {
-
+  const router = useRouter();
   const [formData, setFormData] = useState({
-    fullName: "",
     email: "",
     password: "",
   });
+  const [fieldErrors, setFieldErrors] = useState({
+    email: false,
+    password: false,
+  });
+  const [errorMessage, setErrorMessage] = useState('')
 
-  const handleChange = (e: any) => {
-    setFormData({ ...formData, [e.target.name]: e.target.value });
+  useEffect(() => {
+    const isLoggedBefore = localStorage.getItem("loggedInBefore")
+    if (isLoggedBefore == "true") {
+      console.log(111);
+      router.push('/profile')
+    }
+  }, [])
+
+
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const { name, value } = e.target;
+    setFormData({ ...formData, [name]: value });
+
+    // Simple validation check (e.g., checking if the field is empty)
+    setFieldErrors({ ...fieldErrors, [name]: value.trim() === '' });
   };
 
   const handleSubmit = async (e: any) => {
+    
     e.preventDefault();
+    const newFieldErrors = {
+      email: formData.email.trim() === '',
+      password: formData.password.trim() === '',
+    };
+
+    const hasErrors = Object.values(newFieldErrors).some(error => error);
+    if (hasErrors) {
+      setFieldErrors(newFieldErrors);
+      setErrorMessage('Please fill in all fields.');
+      return;
+    }
+
+    try {
+      const response = await signIn(formData)
+      console.log(response.message)
+      router.push('/profile')
+      localStorage.setItem("loggedInBefore", "true")
+    } catch (error: any) {
+      setErrorMessage(error.message);
+    }
   };
+
+  const getInputClass = (fieldName: keyof typeof fieldErrors) => {
+    return `appearance-none border ${fieldErrors[fieldName] ? 'border-[#F36C6C]' : 'border-gray-300'
+      } rounded w-[420px] py-3 px-3 text-[#070707] leading-tight focus:outline-none focus:shadow-outline focus:border-primary`;
+  };
+
 
   return (
     <section className="flex align-middle items-center gap-x-40 bg-white rounded shadow-md max-w-8xl max-h-[85vh]  mx-auto mt-16 ">
@@ -82,9 +126,12 @@ const LoginPage = () => {
                 </label>
               </div>
               <input
-                className="appearance-none border rounded w-[420px] py-3 px-3 text-custom-gray leading-tight focus:outline-none focus:shadow-outline focus:border-primary"
+                className={getInputClass('email')}
                 id="email"
                 type="email"
+                name="email"
+                value={formData?.email}
+                onChange={handleChange}
                 placeholder="Enter your email address"
               />
             </div>
@@ -99,9 +146,12 @@ const LoginPage = () => {
                 </label>
               </div>
               <input
-                className="appearance-none border rounded w-[420px] py-3 px-3 text-custom-gray leading-tight focus:outline-none focus:shadow-outline focus:border-primary"
+                className={getInputClass('password')}
                 id="password"
                 type="password"
+                name="password"
+                value={formData?.password}
+                onChange={handleChange}
                 placeholder="Enter your password"
               />
             </div>
@@ -112,6 +162,7 @@ const LoginPage = () => {
               >
                 Sign In
               </button>
+              {errorMessage && <p className="text-rose-600">Error: {errorMessage}</p>}
               <div className="text-center mt-4">
                 Don’t have an account? <a href="/register" className="text-blue-500">Sign up here</a>
               </div>
@@ -124,14 +175,3 @@ const LoginPage = () => {
 }
 
 export default LoginPage
-
-{/* <input
-                type="email"
-                id="fullName"
-                name="fullName"
-                value={formData.fullName}
-                onChange={handleChange}
-                className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
-                placeholder="John Doe"
-                required
-              /> */}
