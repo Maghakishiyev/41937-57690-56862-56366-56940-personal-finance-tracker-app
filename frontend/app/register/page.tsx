@@ -1,26 +1,73 @@
 "use client"
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Image from "next/image";
 import EnvelopeIcon from "@/components/icons/EnvelopeIcon";
 import LockClosedIcon from "@/components/icons/LockClosedIcon";
 import img from "@/public/Component3.png"
 import img2 from "@/public/statistics.png"
 import UserAvatarIcon from "@/public/UserAvatar.png"
+import { signUp } from "./api";
+import { useRouter } from "next/navigation";
 
 
 const RegisterPage = () => {
+  const router = useRouter();
   const [formData, setFormData] = useState({
-    fullName: "",
     email: "",
     password: "",
+    confirmPassword: ""
   });
+  const [fieldErrors, setFieldErrors] = useState({
+    email: false,
+    password: false,
+    confirmPassword: false,
+  });
+  const [errorMessage, setErrorMessage] = useState('')
 
-  const handleChange = (e: any) => {
-    setFormData({ ...formData, [e.target.name]: e.target.value });
+  useEffect(() => {
+    const isLoggedBefore = localStorage.getItem("loggedInBefore")
+    if (isLoggedBefore == "true") {
+      console.log(111);
+      router.push('/profile')
+    }
+  }, [])
+
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const { name, value } = e.target;
+    setFormData({ ...formData, [name]: value });
+
+    setFieldErrors({ ...fieldErrors, [name]: value.trim() === '' });
   };
+
 
   const handleSubmit = async (e: any) => {
     e.preventDefault();
+    const newFieldErrors = {
+      email: formData.email.trim() === '',
+      password: formData.password.trim() === '',
+      confirmPassword: formData.password.trim() === '',
+    };
+
+    const hasErrors = Object.values(newFieldErrors).some(error => error);
+    if (hasErrors) {
+      setFieldErrors(newFieldErrors);
+      setErrorMessage('Please fill in all fields.');
+      return;
+    }
+
+    try {
+      const response = await signUp(formData)
+      console.log(response.message)
+      router.push('/profile')
+      localStorage.setItem("loggedInBefore", "true")
+    } catch (error: any) {
+      setErrorMessage(error.message);
+    }
+  };
+
+  const getInputClass = (fieldName: keyof typeof fieldErrors) => {
+    return `appearance-none border ${fieldErrors[fieldName] ? 'border-[#F36C6C]' : 'border-gray-300'
+      } rounded w-[420px] py-3 px-3 text-[#070707] leading-tight focus:outline-none focus:shadow-outline focus:border-primary`;
   };
 
   return (
@@ -80,9 +127,12 @@ const RegisterPage = () => {
                 </label>
               </div>
               <input
-                className="appearance-none border rounded w-[420px] py-3 px-3 text-custom-gray leading-tight focus:outline-none focus:shadow-outline focus:border-primary"
+                className={getInputClass('email')}
                 id="email"
                 type="email"
+                name="email"
+                value={formData?.email}
+                onChange={handleChange}
                 placeholder="Enter your email address"
               />
             </div>
@@ -97,9 +147,12 @@ const RegisterPage = () => {
                 </label>
               </div>
               <input
-                className="appearance-none border rounded w-[420px] py-3 px-3 text-custom-gray leading-tight focus:outline-none focus:shadow-outline focus:border-primary"
+                className={getInputClass('password')}
                 id="password"
                 type="password"
+                name="password"
+                value={formData?.password}
+                onChange={handleChange}
                 placeholder="Enter your password"
               />
             </div>
@@ -114,10 +167,13 @@ const RegisterPage = () => {
                 </label>
               </div>
               <input
-                className="appearance-none border rounded w-[420px] py-3 px-3 text-custom-gray leading-tight focus:outline-none focus:shadow-outline focus:border-primary"
-                id="password"
+                className={getInputClass('confirmPassword')}
+                id="confirmPassword"
                 type="password"
-                placeholder="Repeat your password"
+                name="confirmPassword"
+                value={formData?.confirmPassword}
+                onChange={handleChange}
+                placeholder="Enter your password"
               />
             </div>
             <div className="flex flex-col items-center justify-between">
@@ -125,8 +181,9 @@ const RegisterPage = () => {
                 className="bg-primary  text-white font-bold py-3 w-full rounded focus:outline-none focus:shadow-outline"
                 type="submit"
               >
-                Sign In
+                Sign Up
               </button>
+              {errorMessage && <p>Error: {errorMessage}</p>}
               <div className="text-center mt-4">
                 Already have an account? <a href="/login" className="text-blue-500">Sign in here</a>
               </div>

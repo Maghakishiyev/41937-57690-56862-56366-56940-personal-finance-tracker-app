@@ -17,8 +17,6 @@ export default function PlusIcon({ className = "w-6 h-6" }: PlusIconProps) {
         d="M12 4.5V19.5M19.5 12H4.5"
         stroke="#070707"
         strokeWidth="1.5" // Changed to camelCase
-        strokeLinecap="round" // Changed to camelCase
-        strokeLinejoin="round" // Changed to camelCase
       />
     </svg>
   );

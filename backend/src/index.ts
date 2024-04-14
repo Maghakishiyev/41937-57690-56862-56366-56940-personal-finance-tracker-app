@@ -1,23 +1,37 @@
-import express from "express"
-import * as dotevnv from "dotenv"
-import cors from "cors"
-import helmet from "helmet"
+import express, { Application, Request, Response } from 'express';
+import * as dotenv from 'dotenv';
+import cors from 'cors';
+import helmet from 'helmet';
+import { dbConnection } from './db'; // Ensure the path is correct
+import authRoutes from '../routes/authRoutes'; // Ensure the path is correct
 
-dotevnv.config()
+dotenv.config();
 
-if (!process.env.PORT) {
-    console.log(`No port value specified...`)
+const PORT = process.env.PORT;
+if (!PORT) {
+    console.error('No port value specified in .env...');
+    process.exit(1);
 }
 
-const PORT = parseInt(process.env.PORT as string, 10)
+const app: Application = express();
 
-const app = express()
+dbConnection().catch((error) => {
+    console.error('Failed to connect to MongoDB', error);
+    process.exit(1); 
+});
 
-app.use(express.json())
-app.use(express.urlencoded({extended : true}))
-app.use(cors())
-app.use(helmet())
+app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
+app.use(cors());
+app.use(helmet()); 
 
-app.listen(PORT, () => {
-    console.log(`Server is listening on port ${PORT}`)
-})
+app.get("/", (req: Request, res: Response) => {
+    res.json({ message: "Hello from Express and TypeScript!" });
+});
+
+
+app.use('/api/auth', authRoutes);
+
+app.listen(parseInt(PORT, 10), () => {
+    console.log(`Server is listening on port ${PORT}`);
+});
