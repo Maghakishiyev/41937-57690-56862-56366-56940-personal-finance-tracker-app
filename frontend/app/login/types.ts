@@ -1,8 +1,11 @@
+import { IUser } from '@/store/UserStore';
+
 export interface SigninRequestData {
     email: string;
     password: string;
 }
 
 export interface SigninResponseData {
-    message: string;
+    user: IUser;
+    token: string
 }
