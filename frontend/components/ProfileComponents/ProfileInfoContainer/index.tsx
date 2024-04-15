@@ -33,7 +33,7 @@ export const ProfileInfoContainer: React.FC = () => {
     );
 
     return (
-        <div className='min-w-[280px] w-[280px] h-full px-4 py-8 shadow-sm border border-[#dcdcdc] bg-white rounded flex flex-col items-center gap-64 justify-between'>
+        <div className='min-w-[280px] w-[280px] items-stretch px-4 py-8 shadow-sm border border-[#dcdcdc] bg-white rounded flex flex-col flex-grow gap-64 justify-between'>
             <div className='flex flex-col items-center w-full gap-16'>
                 <div className='flex w-full items-center flex-col gap-4'>
                     <div className='rounded-full flex-shrink-0 w-[116px] h-[116px] overflow-clip'>
