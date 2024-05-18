@@ -26,9 +26,9 @@ const ProfilePage = () => {
             <LoadingIcon className='w-24 h-24 flex-shrink-0 animate-spin' />
         </div>
     ) : (
-        <div className='w-fit h-full mx-auto bg-white flex gap-4 px-6 py-8 rounded-xl shadow-sm mt-16 min-w-[1200px]'>
+        <div className='w-fit mx-auto bg-white flex gap-4 px-6 py-8 rounded-xl shadow-sm mt-16 min-w-[1200px] items-stretch'>
             <ProfileInfoContainer />
-            <div className='flex-grow w-full h-full min-h-full flex flex-col items-start gap-6'>
+            <div className='flex-grow w-full items-stretch flex flex-col gap-6'>
                 <MonthlyReportContainer />
                 <ExpensesTableContainer />
             </div>
