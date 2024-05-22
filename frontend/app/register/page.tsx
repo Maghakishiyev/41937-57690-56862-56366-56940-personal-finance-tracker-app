@@ -57,6 +57,7 @@ const RegisterPage = () => {
         setIsUserLoading(true);
         try {
             const response = await signUp(formData);
+            localStorage.setItem('token', response.token)
             setUser(response.user);
             setIsUserLoggedIn(true);
         } catch (error: any) {
@@ -67,9 +68,8 @@ const RegisterPage = () => {
     };
 
     const getInputClass = (fieldName: keyof typeof fieldErrors) => {
-        return `appearance-none border ${
-            fieldErrors[fieldName] ? 'border-[#F36C6C]' : 'border-gray-300'
-        } rounded w-[420px] py-3 px-3 text-[#070707] leading-tight focus:outline-none focus:shadow-outline focus:border-primary`;
+        return `appearance-none border ${fieldErrors[fieldName] ? 'border-[#F36C6C]' : 'border-gray-300'
+            } rounded w-[420px] py-3 px-3 text-[#070707] leading-tight focus:outline-none focus:shadow-outline focus:border-primary`;
     };
 
     return (

@@ -21,7 +21,14 @@ router.post('/signup', async (req: Request, res: Response) => {
         });
 
         await user.save();
-        res.status(201).json({ user: { email: user.email, id: user._id } });
+
+        const token = jwt.sign(
+            { userId: user._id, email: user.email },
+            JWT_SECRET,
+            { expiresIn: '1h' } // Token expires in 1 hour
+        );
+
+        res.status(201).json({ user: { email: user.email, id: user._id },token });
     } catch (error) {
         res.status(500).json({ message: 'Error creating the user', error });
     }
