@@ -1,12 +1,13 @@
 import { proxy } from 'valtio';
 
 export interface IUser {
-    id: string;
+    _id: string;
     email: string;
-    profileName?: string;
-    firstname?: string;
-    lastName?: string;
-    birthDay?: string;
+    firstName: string;
+    lastName: string;
+    userName: string;
+    birthday: string;
+    imageFile: string;
 }
 
 export interface IUserState {
@@ -16,7 +17,15 @@ export interface IUserState {
 }
 
 export const AccountState = proxy<IUserState>({
-    user: { email: '', id: '' },
+    user: {
+        _id: '',
+        email: '',
+        firstName: '',
+        lastName: '',
+        userName: '',
+        imageFile: '',
+        birthday: '',
+    },
     isUserLoading: false,
     isUserLoggedIn: false,
 });

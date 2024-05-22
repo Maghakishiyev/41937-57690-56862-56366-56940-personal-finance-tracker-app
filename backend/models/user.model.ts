@@ -5,10 +5,12 @@ import { IUser } from './user.interface';
 const userSchema: Schema = new Schema({
     email: { type: String, required: true, unique: true },
     password: { type: String, required: true },
-    profileName: { type: String, required: false },
-    firstname: { type: String, required: false },
+    userName: { type: String, required: false },
+    firstName: { type: String, required: false },
     lastName: { type: String, required: false },
-    birthDay: { type: Date, required: false },
+    birthday: { type: String, required: false },
+    imageFile: { type: String, required: false },
+    
 });
 
 export const User = mongoose.model<IUser & Document>('User', userSchema);

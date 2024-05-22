@@ -16,7 +16,15 @@ const Header: React.FC = () => {
 
     const signOutClickHandler = useCallback(() => {
         setIsUserLoading(true);
-        setUser({ email: '', id: '' });
+        setUser({
+            _id: '',
+            email: '',
+            firstName: '',
+            lastName: '',
+            userName: '',
+            imageFile: '',
+            birthday: '',
+        });
         setIsUserLoggedIn(false);
         setIsUserLoading(false);
         router.replace('/');
