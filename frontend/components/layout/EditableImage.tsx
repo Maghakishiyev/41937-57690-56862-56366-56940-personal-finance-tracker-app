@@ -16,10 +16,13 @@ const EditableImage = () => {
             if (file) {
                 const formData = new FormData();
                 formData.append('imageFile', file);
-
+                const token = localStorage.getItem('token');
                 try {
-                    const response = await fetch('http://localhost:8080/upload', {
+                    const response = await fetch('http://localhost:8080/upload/img', {
                         method: 'POST',
+                        headers: {
+                            'Authorization': `Bearer ${token}`
+                        },
                         body: formData,
                     });
                     const data = await response.json();

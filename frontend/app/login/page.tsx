@@ -32,7 +32,6 @@ const LoginPage = () => {
     const { isUserLoading, isUserLoggedIn, user } = useSnapshot(AccountState);
 
     useEffect(() => {
-        console.log(isUserLoading, isUserLoggedIn, user);
         if (!isUserLoading && isUserLoggedIn && user._id) {
             router.replace('/profile');
         }
@@ -62,7 +61,6 @@ const LoginPage = () => {
         setIsUserLoading(true);
         try {
             const response = await signIn(formData);
-            console.log("response", response);
             localStorage.setItem('token', response.token)
             const updatedUser: IUser = {
                 ...user,

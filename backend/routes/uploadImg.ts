@@ -4,6 +4,7 @@ import multer from "multer"
 import { PutObjectCommand, S3Client } from "@aws-sdk/client-s3";
 
 import config from "../configs"
+import { authCheck } from "../middleware";
 
 const router = express.Router();
 
@@ -18,7 +19,7 @@ const s3Client = new S3Client({
     }
 });
 
-router.post('/', upload.single('imageFile'), async (req, res) => {
+router.post('/img', authCheck, upload.single('imageFile'), async (req, res) => {
     if (!req.file) { return res.status(400).send({ error: 'No file uploaded' }); }
     const file = req.file;
 
@@ -33,7 +34,7 @@ router.post('/', upload.single('imageFile'), async (req, res) => {
         })
 
         await s3Client.send(command).then((res) => {
-    
+            console.log("res", res);
         });
 
 

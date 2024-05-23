@@ -12,7 +12,6 @@ const JWT_SECRET = config.jwt_secret;
 
 router.post('/signup', async (req: Request, res: Response) => {
     const { email, password } = req.body;
-
     try {
         const hashedPassword = await hashPassword(password);
         const user = new User({
@@ -22,13 +21,13 @@ router.post('/signup', async (req: Request, res: Response) => {
 
         await user.save();
 
-        const token = jwt.sign(
-            { userId: user._id, email: user.email },
-            JWT_SECRET,
-            { expiresIn: '1h' } // Token expires in 1 hour
-        );
+        const token = jwt.sign({ userId: user._id }, JWT_SECRET, {
+            expiresIn: '1h',
+        });
 
-        res.status(201).json({ user: { email: user.email, id: user._id },token });
+        console.log("user", user);
+
+        res.status(201).json({ user: { ...user }, token });
     } catch (error) {
         res.status(500).json({ message: 'Error creating the user', error });
     }

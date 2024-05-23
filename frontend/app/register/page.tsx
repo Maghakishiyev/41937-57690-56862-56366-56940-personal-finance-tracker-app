@@ -9,7 +9,7 @@ import UserAvatarIcon from '@/public/UserAvatar.png';
 import { signUp } from './api';
 import { useRouter } from 'next/navigation';
 import { useSnapshot } from 'valtio';
-import { AccountState, setIsUserLoading, setIsUserLoggedIn, setUser } from '@/store/UserStore';
+import { AccountState, IUser, setIsUserLoading, setIsUserLoggedIn, setUser } from '@/store/UserStore';
 
 const RegisterPage = () => {
     const router = useRouter();
@@ -27,7 +27,7 @@ const RegisterPage = () => {
     const { isUserLoading, isUserLoggedIn, user } = useSnapshot(AccountState);
 
     useEffect(() => {
-        if (!isUserLoading && isUserLoggedIn && user.id) {
+        if (!isUserLoading && isUserLoggedIn && user._id) {
             router.replace('/profile');
         }
     }, [isUserLoading, isUserLoggedIn, user]);
@@ -57,8 +57,14 @@ const RegisterPage = () => {
         setIsUserLoading(true);
         try {
             const response = await signUp(formData);
+            console.log("response", response);
             localStorage.setItem('token', response.token)
-            setUser(response.user);
+            const updatedUser: IUser = {
+                ...user,
+                ...(response as any).user._doc
+            };
+            setUser(updatedUser);
+            router.replace('/profile')
             setIsUserLoggedIn(true);
         } catch (error: any) {
             setErrorMessage(error.message);
