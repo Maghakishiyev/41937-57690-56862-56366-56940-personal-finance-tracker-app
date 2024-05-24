@@ -13,7 +13,8 @@ import { useSnapshot } from 'valtio';
 const Header: React.FC = () => {
     const router = useRouter();
     const pathname = usePathname()
-    const { isUserLoggedIn } = useSnapshot(AccountState);
+    const { isUserLoggedIn, user } = useSnapshot(AccountState);
+    const userInfo = { ...user }
     const signOutClickHandler = useCallback(() => {
         setIsUserLoading(true);
         setUser({
@@ -79,12 +80,17 @@ const Header: React.FC = () => {
                     </Link>
                 </div>
             ) : (
-                <button
-                    onClick={signOutClickHandler}
-                    className='bg-black text-white text-lg px-4 py-2 rounded-lg'
-                >
-                    Sign out
-                </button>
+                <div className='flex flex-row gap-x-3 items-center'>
+                    <span className='cursor-pointer text-white'>
+                        {userInfo.userName}
+                    </span>
+                    <button
+                        onClick={signOutClickHandler}
+                        className='bg-black text-white text-lg px-4 py-2 rounded-lg'
+                    >
+                        Sign out
+                    </button>
+                </div>
             )}
         </header>
     );

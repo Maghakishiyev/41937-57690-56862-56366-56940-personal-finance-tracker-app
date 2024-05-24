@@ -9,7 +9,7 @@ import { useSnapshot } from 'valtio';
 
 const USER_INFO_FIELDS: { [key: string]: string } = {
     email: 'Email:',
-    profileName: 'User Name:',
+    userName: 'User Name:',
     firstName: 'First Name:',
     lastName: 'Last Name:',
     birthday: 'Birthday:',

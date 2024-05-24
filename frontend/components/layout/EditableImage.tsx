@@ -7,6 +7,7 @@ import {
 } from '@/store/UserStore';
 import React from 'react'
 import { useSnapshot } from 'valtio';
+import { CloudUpload } from '@mui/icons-material';
 
 const EditableImage = () => {
     const state = useSnapshot(AccountState);
@@ -55,7 +56,8 @@ const EditableImage = () => {
                     name="imageFile"
                     onChange={handleImageChange}
                 />
-                <Button variant="outlined" component="span">
+                <Button variant="outlined" component="span" className='flex flex-row gap-x-2.5 items-center'>
+                    <CloudUpload />
                     Change Image
                 </Button>
             </label>
