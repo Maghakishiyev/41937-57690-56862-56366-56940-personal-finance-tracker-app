@@ -62,6 +62,12 @@ const Header: React.FC = () => {
                                 </span>
                                 {pathname == '/track' && <span className='absolute left-0 bottom-0 h-0.5 w-full bg-white'></span>}
                             </Link>
+                            <Link className='relative' href='/categories'>
+                                <span className='text-white text-lg cursor-pointer'>
+                                    Categories
+                                </span>
+                                {pathname == '/categories' && <span className='absolute left-0 bottom-0 h-0.5 w-full bg-white'></span>}
+                            </Link>
                         </div>
                     )}
                 </div>
