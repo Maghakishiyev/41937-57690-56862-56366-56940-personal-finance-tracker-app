@@ -6,14 +6,14 @@ import {
     setUser,
 } from '@/store/UserStore';
 import Link from 'next/link';
-import { useRouter } from 'next/navigation';
+import { usePathname, useRouter } from 'next/navigation';
 import { useCallback } from 'react';
 import { useSnapshot } from 'valtio';
 
 const Header: React.FC = () => {
     const router = useRouter();
+    const pathname = usePathname()
     const { isUserLoggedIn } = useSnapshot(AccountState);
-
     const signOutClickHandler = useCallback(() => {
         setIsUserLoading(true);
         setUser({
@@ -43,17 +43,25 @@ const Header: React.FC = () => {
                         <span className='text-white text-lg relative cursor-pointer'>
                             Home
                         </span>
-                        {!isUserLoggedIn && (
+                        {pathname == '/' && (
                             <span className='absolute left-0 bottom-0 h-0.5 w-full bg-white'></span>
                         )}
                     </Link>
                     {isUserLoggedIn && (
-                        <Link className='relative' href='/profile'>
-                            <span className='text-white text-lg cursor-pointer'>
-                                Profile
-                            </span>
-                            <span className='absolute left-0 bottom-0 h-0.5 w-full bg-white'></span>
-                        </Link>
+                        <div className='flex flex-row gap-x-4'>
+                            <Link className='relative' href='/profile'>
+                                <span className='text-white text-lg cursor-pointer'>
+                                    Profile
+                                </span>
+                                {pathname == '/profile' && <span className='absolute left-0 bottom-0 h-0.5 w-full bg-white'></span>}
+                            </Link>
+                            <Link className='relative' href='/track'>
+                                <span className='text-white text-lg cursor-pointer'>
+                                    Track
+                                </span>
+                                {pathname == '/track' && <span className='absolute left-0 bottom-0 h-0.5 w-full bg-white'></span>}
+                            </Link>
+                        </div>
                     )}
                 </div>
             </div>

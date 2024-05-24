@@ -55,7 +55,7 @@ const TransactionForm: React.FC = () => {
                         <CalendarMonthOutlined />
                         Date
                     </StyledLabel>
-                    <TextField label="Date" type="date" fullWidth />
+                    <TextField label="" type="date" fullWidth />
                 </StyledDiv>
                 <StyledDiv>
                     <StyledLabel htmlFor="">
@@ -129,7 +129,7 @@ const TransactionForm: React.FC = () => {
                         <CalendarMonthOutlined />
                         Date
                     </StyledLabel>
-                    <TextField label="Date" type="date" fullWidth />
+                    <TextField label="" type="date" fullWidth />
                 </StyledDiv>
                 <StyledDiv>
                     <StyledLabel htmlFor="">
@@ -204,7 +204,7 @@ const TransactionForm: React.FC = () => {
                         <CalendarMonthOutlined />
                         Date
                     </StyledLabel>
-                    <TextField label="Date" type="date" fullWidth />
+                    <TextField label="" type="date" fullWidth />
                 </StyledDiv>
                 <StyledDiv>
                     <StyledLabel htmlFor="">
