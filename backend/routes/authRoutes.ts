@@ -87,4 +87,22 @@ router.put(`/user/:id`, authCheck, async (req: Request, res: Response) => {
     }
 })
 
+router.post(`/addCategory/:id`, authCheck, async (req: Request, res: Response) => {
+    const { id } = req.params;
+
+    console.log("req.body", req.body)
+    try {
+        const user = await User.findById(id)
+        if (!user) { return res.status(404).send('User not found'); }
+
+        user.categories.push(req.body);
+        await user.save();
+        res.status(201).send(user);
+    } catch (error) {
+        console.error('Error adding category:', error);
+        res.status(500).send('Server error');
+    }
+})
+
+
 export default router;
