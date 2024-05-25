@@ -7,13 +7,13 @@ import {
 } from '@/store/UserStore';
 import Link from 'next/link';
 import { usePathname, useRouter } from 'next/navigation';
-import { useCallback } from 'react';
+import { useCallback, useEffect } from 'react';
 import { useSnapshot } from 'valtio';
 
 const Header: React.FC = () => {
     const router = useRouter();
     const pathname = usePathname()
-    const { isUserLoggedIn, user } = useSnapshot(AccountState);
+    const { isUserLoading, isUserLoggedIn, user } = useSnapshot(AccountState);
     const userInfo = { ...user }
     const signOutClickHandler = useCallback(() => {
         setIsUserLoading(true);
@@ -25,11 +25,18 @@ const Header: React.FC = () => {
             userName: '',
             imageFile: '',
             birthday: '',
+            categories: []
         });
         setIsUserLoggedIn(false);
         setIsUserLoading(false);
         router.replace('/');
     }, []);
+
+    useEffect(() => {
+        if (!isUserLoading && !isUserLoggedIn) {
+            router.replace('/login');
+        }
+    }, [isUserLoading, isUserLoggedIn]);
 
     return (
         <header className='bg-blue-800 flex justify-between items-center px-8 py-3'>

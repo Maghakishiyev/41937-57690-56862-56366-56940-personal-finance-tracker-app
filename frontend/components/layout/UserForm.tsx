@@ -1,7 +1,5 @@
 import React from 'react';
 import { TextField } from '@mui/material';
-import { IUserState } from '@/store/UserStore';
-
 interface IUserFormProps { formData: any, setFormData: any, fieldErrors: any, setFieldErrors: any }
 
 const UserForm: React.FC<IUserFormProps> = ({ formData, setFormData, fieldErrors, setFieldErrors }: IUserFormProps) => {

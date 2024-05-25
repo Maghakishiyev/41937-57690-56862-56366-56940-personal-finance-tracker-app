@@ -29,7 +29,7 @@ export const ProfileInfoContainer: React.FC = () => {
                     return (
                         <span key={USER_INFO_FIELDS?.[key]} className='w-full text-left text-sm font-regular text-[#7D8395]'>
                             {USER_INFO_FIELDS?.[key]}{' '}
-                            {value?.length > 23
+                            {value?.length > 23  
                                 ? shortenString(value, 10, 10)
                                 : value}
                         </span>
