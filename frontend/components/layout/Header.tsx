@@ -6,21 +6,34 @@ import {
     setUser,
 } from '@/store/UserStore';
 import Link from 'next/link';
-import { useRouter } from 'next/navigation';
-import { useCallback } from 'react';
+import { usePathname, useRouter } from 'next/navigation';
+import { useCallback, useEffect } from 'react';
 import { useSnapshot } from 'valtio';
+import { useAuthRedirect } from './authRedirect';
 
 const Header: React.FC = () => {
     const router = useRouter();
-    const { isUserLoggedIn } = useSnapshot(AccountState);
-
+    const pathname = usePathname()
+    const { isUserLoading, isUserLoggedIn, user } = useSnapshot(AccountState);
+    const userInfo = { ...user }
     const signOutClickHandler = useCallback(() => {
         setIsUserLoading(true);
-        setUser({ email: '', id: '' });
+        setUser({
+            _id: '',
+            email: '',
+            firstName: '',
+            lastName: '',
+            userName: '',
+            imageFile: '',
+            birthday: '',
+            categories: []
+        });
         setIsUserLoggedIn(false);
         setIsUserLoading(false);
         router.replace('/');
     }, []);
+
+    useAuthRedirect({ isUserLoading, isUserLoggedIn })
 
     return (
         <header className='bg-blue-800 flex justify-between items-center px-8 py-3'>
@@ -35,17 +48,31 @@ const Header: React.FC = () => {
                         <span className='text-white text-lg relative cursor-pointer'>
                             Home
                         </span>
-                        {!isUserLoggedIn && (
+                        {pathname == '/' && (
                             <span className='absolute left-0 bottom-0 h-0.5 w-full bg-white'></span>
                         )}
                     </Link>
                     {isUserLoggedIn && (
-                        <Link className='relative' href='/profile'>
-                            <span className='text-white text-lg cursor-pointer'>
-                                Profile
-                            </span>
-                            <span className='absolute left-0 bottom-0 h-0.5 w-full bg-white'></span>
-                        </Link>
+                        <div className='flex flex-row gap-x-4'>
+                            <Link className='relative' href='/profile'>
+                                <span className='text-white text-lg cursor-pointer'>
+                                    Profile
+                                </span>
+                                {pathname == '/profile' && <span className='absolute left-0 bottom-0 h-0.5 w-full bg-white'></span>}
+                            </Link>
+                            <Link className='relative' href='/track'>
+                                <span className='text-white text-lg cursor-pointer'>
+                                    Track
+                                </span>
+                                {pathname == '/track' && <span className='absolute left-0 bottom-0 h-0.5 w-full bg-white'></span>}
+                            </Link>
+                            <Link className='relative' href='/categories'>
+                                <span className='text-white text-lg cursor-pointer'>
+                                    Categories
+                                </span>
+                                {pathname == '/categories' && <span className='absolute left-0 bottom-0 h-0.5 w-full bg-white'></span>}
+                            </Link>
+                        </div>
                     )}
                 </div>
             </div>
@@ -63,12 +90,17 @@ const Header: React.FC = () => {
                     </Link>
                 </div>
             ) : (
-                <button
-                    onClick={signOutClickHandler}
-                    className='bg-black text-white text-lg px-4 py-2 rounded-lg'
-                >
-                    Sign out
-                </button>
+                <div className='flex flex-row gap-x-3 items-center'>
+                    <span className='cursor-pointer text-white'>
+                        {userInfo.userName}
+                    </span>
+                    <button
+                        onClick={signOutClickHandler}
+                        className='bg-black text-white text-lg px-4 py-2 rounded-lg'
+                    >
+                        Sign out
+                    </button>
+                </div>
             )}
         </header>
     );

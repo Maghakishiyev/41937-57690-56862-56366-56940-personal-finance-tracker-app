@@ -11,6 +11,7 @@ import { useRouter } from 'next/navigation';
 import { useSnapshot } from 'valtio';
 import {
     AccountState,
+    IUser,
     setIsUserLoading,
     setIsUserLoggedIn,
     setUser,
@@ -31,7 +32,7 @@ const LoginPage = () => {
     const { isUserLoading, isUserLoggedIn, user } = useSnapshot(AccountState);
 
     useEffect(() => {
-        if (!isUserLoading && isUserLoggedIn && user.id) {
+        if (!isUserLoading && isUserLoggedIn && user._id) {
             router.replace('/profile');
         }
     }, [isUserLoading, isUserLoggedIn, user]);
@@ -60,7 +61,12 @@ const LoginPage = () => {
         setIsUserLoading(true);
         try {
             const response = await signIn(formData);
-            setUser(response.user);
+            localStorage.setItem('token', response.token)
+            const updatedUser: IUser = {
+                ...user,
+                ...(response as any).user._doc
+            };
+            setUser(updatedUser);
             setIsUserLoggedIn(true);
         } catch (error: any) {
             setErrorMessage(error.message);
@@ -70,13 +76,12 @@ const LoginPage = () => {
     };
 
     const getInputClass = (fieldName: keyof typeof fieldErrors) => {
-        return `appearance-none border ${
-            fieldErrors[fieldName] ? 'border-[#F36C6C]' : 'border-gray-300'
-        } rounded w-[420px] py-3 px-3 text-[#070707] leading-tight focus:outline-none focus:shadow-outline focus:border-primary`;
+        return `appearance-none border ${fieldErrors[fieldName] ? 'border-[#F36C6C]' : 'border-gray-300'
+            } rounded w-[420px] py-3 px-3 text-[#070707] leading-tight focus:outline-none focus:shadow-outline focus:border-primary`;
     };
 
     return (
-        <section className='flex align-middle items-center gap-x-40 bg-white rounded shadow-md max-w-8xl max-h-[85vh]  mx-auto mt-16 '>
+        <section className='flex align-middle items-center gap-x-40 bg-white rounded shadow-md max-w-8xl max-h-[85vh] mx-auto mt-16'>
             <div className='flex flex-col gap-y-[110px] bg-gradient-to-tr from-[#0034D3] to-[#92C5FA] min-w-[660px] my-8 ml-7 rounded-xl'>
                 <h1 className='mt-8 ml-8 text-white text-[32px] font-bold font-jura'>
                     CashTrack

@@ -1,8 +1,18 @@
+export interface ICategory {
+    _id: string;
+    categoryName: string;
+    categoryIcon: string;
+    categoryType: string;
+    categoryDescription?: string;
+}
+
 export interface IUser {
     email: string;
-    password: string;
-    profileName?: string;
-    firstname?: string;
-    lastName?: string;
-    birthDay?: string;
+    firstName: string;
+    lastName: string;
+    userName: string;
+    birthday: string;
+    imageFile: string;
+    password: string
+    categories: ICategory[]
 }

@@ -9,7 +9,7 @@ import UserAvatarIcon from '@/public/UserAvatar.png';
 import { signUp } from './api';
 import { useRouter } from 'next/navigation';
 import { useSnapshot } from 'valtio';
-import { AccountState, setIsUserLoading, setIsUserLoggedIn, setUser } from '@/store/UserStore';
+import { AccountState, IUser, setIsUserLoading, setIsUserLoggedIn, setUser } from '@/store/UserStore';
 
 const RegisterPage = () => {
     const router = useRouter();
@@ -27,7 +27,7 @@ const RegisterPage = () => {
     const { isUserLoading, isUserLoggedIn, user } = useSnapshot(AccountState);
 
     useEffect(() => {
-        if (!isUserLoading && isUserLoggedIn && user.id) {
+        if (!isUserLoading && isUserLoggedIn && user._id) {
             router.replace('/profile');
         }
     }, [isUserLoading, isUserLoggedIn, user]);
@@ -57,7 +57,13 @@ const RegisterPage = () => {
         setIsUserLoading(true);
         try {
             const response = await signUp(formData);
-            setUser(response.user);
+            localStorage.setItem('token', response.token)
+            const updatedUser: IUser = {
+                ...user,
+                ...(response as any).user._doc
+            };
+            setUser(updatedUser);
+            router.replace('/profile')
             setIsUserLoggedIn(true);
         } catch (error: any) {
             setErrorMessage(error.message);
@@ -67,9 +73,8 @@ const RegisterPage = () => {
     };
 
     const getInputClass = (fieldName: keyof typeof fieldErrors) => {
-        return `appearance-none border ${
-            fieldErrors[fieldName] ? 'border-[#F36C6C]' : 'border-gray-300'
-        } rounded w-[420px] py-3 px-3 text-[#070707] leading-tight focus:outline-none focus:shadow-outline focus:border-primary`;
+        return `appearance-none border ${fieldErrors[fieldName] ? 'border-[#F36C6C]' : 'border-gray-300'
+            } rounded w-[420px] py-3 px-3 text-[#070707] leading-tight focus:outline-none focus:shadow-outline focus:border-primary`;
     };
 
     return (
