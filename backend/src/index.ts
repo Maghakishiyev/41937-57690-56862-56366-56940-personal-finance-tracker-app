@@ -5,6 +5,7 @@ import helmet from 'helmet';
 import { dbConnection } from './db';
 import authRoutes from '../routes/authRoutes';
 import uploadImg from '../routes/uploadImg';
+import accountRoutes from '../routes/accountRoutes';
 
 dotenv.config();
 
@@ -26,13 +27,13 @@ app.use(express.urlencoded({ extended: true }));
 app.use(cors());
 app.use(helmet());
 
-app.get("/", (req: Request, res: Response) => {
-    res.json({ message: "Hello from Express and TypeScript!" });
+app.get('/', (req: Request, res: Response) => {
+    res.json({ message: 'Hello from Express and TypeScript!' });
 });
 
-
 app.use('/api/auth', authRoutes);
-app.use('/upload', uploadImg)
+app.use('/upload', uploadImg);
+app.use('/api/accounts', accountRoutes);
 
 app.listen(parseInt(PORT, 10), () => {
     console.log(`Server is listening on port ${PORT}`);

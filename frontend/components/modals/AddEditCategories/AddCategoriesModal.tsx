@@ -104,7 +104,7 @@ const AddCategoriesModal = ({ open, setOpen }: EditUserInfoModalProps) => {
                             name="categoryType"
                             value={formData.categoryType}
                             error={fieldErrors.categoryType}
-                            onChange={handleChange}
+                            onChange={handleChange as any}
                         >
                             <MenuItem value="0">Expense</MenuItem>
                             <MenuItem value="1">Income</MenuItem>
