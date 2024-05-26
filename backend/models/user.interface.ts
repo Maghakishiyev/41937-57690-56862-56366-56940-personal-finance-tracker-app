@@ -6,6 +6,18 @@ export interface ICategory {
     categoryDescription?: string;
 }
 
+export interface ITrack {
+    _id: string;
+    account?: string;
+    amount: string;
+    category?: string;
+    date: string;
+    description?: string;
+    note?: string;
+    from?: string;
+    to?: string;
+}
+
 export interface IUser {
     email: string;
     firstName: string;
@@ -15,4 +27,5 @@ export interface IUser {
     imageFile: string;
     password: string
     categories: ICategory[]
+    tracks: ITrack[]
 }

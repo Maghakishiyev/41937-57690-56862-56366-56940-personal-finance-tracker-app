@@ -8,6 +8,18 @@ const categorySchema = new Schema({
     categoryDes: { type: String, required: false }
 });
 
+const trackSchema = new Schema({
+    date: { type: String, required: true },
+    amount: { type: String, required: true },
+    category: { type: String },
+    account: { type: String },
+    note: { type: String },
+    from: { type: String },
+    to: { type: String },
+    description: { type: String },
+    _id: { type: String, required: true, unique: true }
+})
+
 
 const userSchema: Schema = new Schema({
     email: { type: String, required: true, unique: true },
@@ -17,7 +29,9 @@ const userSchema: Schema = new Schema({
     lastName: { type: String, required: false },
     birthday: { type: String, required: false },
     imageFile: { type: String, required: false },
-    categories: [categorySchema]
+    categories: { type: [categorySchema], default: [] },
+    tracks: { type: [trackSchema], default: [] }
+
 });
 
 export const User = mongoose.model<IUser & Document>('User', userSchema);
