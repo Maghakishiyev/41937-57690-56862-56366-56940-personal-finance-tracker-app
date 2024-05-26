@@ -8,6 +8,18 @@ export interface ICategories {
     categoryDes?: string
 }
 
+export interface ITrack {
+    _id: string;
+    account?: string;
+    amount: string;
+    category?: string;
+    date: string;
+    description?: string;
+    note?: string;
+    from?: string;
+    to?: string;
+}
+
 export interface IUser {
     _id: string;
     email: string;
@@ -17,6 +29,7 @@ export interface IUser {
     birthday: string;
     imageFile: string;
     categories: ICategories[];
+    track: ITrack[]
 }
 
 export interface IUserState {
@@ -36,7 +49,8 @@ export const AccountState = proxy<IUserState>({
         userName: '',
         imageFile: '',
         birthday: '',
-        categories: []
+        categories: [],
+        track: []
     },
     isUserLoading: false,
     isUserLoggedIn: false,
@@ -50,6 +64,11 @@ export const setUser = (user: IUser) => {
 
 export const setUserCategories = (categories: ICategories) => {
     AccountState.user.categories.push(categories)
+}
+
+export const setUserTracks = (track: ITrack) => {
+    console.log('track', track);
+    AccountState.user.track.push(track)
 }
 
 export const setIsUserLoading = (loading: boolean) => {

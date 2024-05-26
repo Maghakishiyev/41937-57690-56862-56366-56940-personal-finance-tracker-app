@@ -18,7 +18,8 @@ router.post('/signup', async (req: Request, res: Response) => {
         const user = new User({
             email,
             password: hashedPassword,
-            categories: getDefaultCategories()
+            categories: getDefaultCategories(),
+            tracks: []
         });
 
         await user.save();
@@ -97,6 +98,27 @@ router.post(`/addCategory/:id`, authCheck, async (req: Request, res: Response) =
         res.status(201).send(user);
     } catch (error) {
         console.error('Error adding category:', error);
+        res.status(500).send('Server error');
+    }
+})
+
+router.post(`/addTrack/:id`, authCheck, async (req: Request, res: Response) => {
+    const { id } = req.params;
+    const data = { ...req.body };
+
+    try {
+        const user = await User.findById(id)
+        if (!user) { return res.status(404).send('User not found') }
+
+        if (!user.tracks) {
+            user.tracks = [];
+        }
+
+        user.tracks.push(data)
+        await user.save();
+        res.status(201).send(user)
+    } catch (error) {
+        console.error('Error adding track:', error);
         res.status(500).send('Server error');
     }
 })
