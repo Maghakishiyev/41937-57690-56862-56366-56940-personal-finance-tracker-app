@@ -5,6 +5,7 @@ import jwt from 'jsonwebtoken';
 import { hashPassword } from '../utils/hashPassword';
 import { authCheck } from '../middleware'
 import config from '../configs';
+import { getDefaultCategories } from '../src/defaultCategories';
 
 const router = express.Router();
 
@@ -17,6 +18,7 @@ router.post('/signup', async (req: Request, res: Response) => {
         const user = new User({
             email,
             password: hashedPassword,
+            categories: getDefaultCategories()
         });
 
         await user.save();
@@ -106,3 +108,5 @@ router.post(`/addCategory/:id`, authCheck, async (req: Request, res: Response) =
 
 
 export default router;
+
+
