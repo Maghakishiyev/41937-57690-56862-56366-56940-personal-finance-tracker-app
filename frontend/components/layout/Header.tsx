@@ -9,10 +9,12 @@ import Link from 'next/link';
 import { usePathname, useRouter } from 'next/navigation';
 import { useCallback, useEffect } from 'react';
 import { useSnapshot } from 'valtio';
+import { useAuthRedirect } from './authRedirect';
 
 const Header: React.FC = () => {
     const router = useRouter();
     const pathname = usePathname()
+    console.log(pathname);
     const { isUserLoading, isUserLoggedIn, user } = useSnapshot(AccountState);
     const userInfo = { ...user }
     const signOutClickHandler = useCallback(() => {
@@ -32,11 +34,7 @@ const Header: React.FC = () => {
         router.replace('/');
     }, []);
 
-    useEffect(() => {
-        if (!isUserLoading && !isUserLoggedIn) {
-            router.replace('/login');
-        }
-    }, [isUserLoading, isUserLoggedIn]);
+    useAuthRedirect({ isUserLoading, isUserLoggedIn })
 
     return (
         <header className='bg-blue-800 flex justify-between items-center px-8 py-3'>
