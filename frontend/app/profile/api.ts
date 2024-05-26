@@ -5,7 +5,7 @@ const API_BASE_URL = 'http://localhost:8080/api/auth'; // Replace with your actu
 
 
 export async function updateUserData(userId: string, userData: IUser) {
-    console.log(userId, userData);
+
     try {
         const token = localStorage.getItem('token');
 
@@ -15,7 +15,6 @@ export async function updateUserData(userId: string, userData: IUser) {
             }
         });
 
-        console.log('User data updated successfully:', response.data);
         return response.data; // Optionally return the data
     } catch (error: any) {
         console.error('Error updating user:', error.response ? error.response.data : error.message);

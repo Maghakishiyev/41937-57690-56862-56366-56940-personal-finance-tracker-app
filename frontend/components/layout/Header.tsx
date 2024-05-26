@@ -14,7 +14,6 @@ import { useAuthRedirect } from './authRedirect';
 const Header: React.FC = () => {
     const router = useRouter();
     const pathname = usePathname()
-    console.log(pathname);
     const { isUserLoading, isUserLoggedIn, user } = useSnapshot(AccountState);
     const userInfo = { ...user }
     const signOutClickHandler = useCallback(() => {

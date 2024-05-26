@@ -27,8 +27,6 @@ router.post('/signup', async (req: Request, res: Response) => {
             expiresIn: '1h',
         });
 
-        console.log("user", user);
-
         res.status(201).json({ user: { ...user }, token });
     } catch (error) {
         res.status(500).json({ message: 'Error creating the user', error });
@@ -40,7 +38,6 @@ router.post('/signin', async (req: Request, res: Response) => {
 
     try {
         const user = await User.findOne({ email });
-        console.log('user', user);
         if (!user) {
             return res
                 .status(401)
@@ -91,8 +88,6 @@ router.put(`/user/:id`, authCheck, async (req: Request, res: Response) => {
 
 router.post(`/addCategory/:id`, authCheck, async (req: Request, res: Response) => {
     const { id } = req.params;
-
-    console.log("req.body", req.body)
     try {
         const user = await User.findById(id)
         if (!user) { return res.status(404).send('User not found'); }

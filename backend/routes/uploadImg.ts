@@ -34,7 +34,6 @@ router.post('/img', authCheck, upload.single('imageFile'), async (req, res) => {
         })
 
         await s3Client.send(command).then((res) => {
-            console.log("res", res);
         });
 
 

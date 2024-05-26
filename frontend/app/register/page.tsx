@@ -57,7 +57,6 @@ const RegisterPage = () => {
         setIsUserLoading(true);
         try {
             const response = await signUp(formData);
-            console.log("response", response);
             localStorage.setItem('token', response.token)
             const updatedUser: IUser = {
                 ...user,

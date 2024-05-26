@@ -49,10 +49,7 @@ export const setUser = (user: IUser) => {
 };
 
 export const setUserCategories = (categories: ICategories) => {
-    console.log("store category", categories);
     AccountState.user.categories.push(categories)
-    console.log("account state: ", AccountState);
-
 }
 
 export const setIsUserLoading = (loading: boolean) => {

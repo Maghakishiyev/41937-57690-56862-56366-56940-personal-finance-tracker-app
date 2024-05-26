@@ -43,7 +43,6 @@ const AddCategoriesModal = ({ open, setOpen }: EditUserInfoModalProps) => {
             ...formData,
             _id: uniqId
         }
-        console.log("user_id", user._id);
         setUserCategories(updatedFormData);
         addCategoryToUser(updatedFormData, user._id)
 
