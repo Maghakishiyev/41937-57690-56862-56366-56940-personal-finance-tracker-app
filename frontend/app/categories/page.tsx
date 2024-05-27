@@ -1,13 +1,15 @@
 "use client"
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Add, SellOutlined } from "@mui/icons-material";
 import DeleteIcon from '@mui/icons-material/Delete';
 import EditIcon from '@mui/icons-material/Edit';
 import { useSnapshot } from "valtio";
 import { Button, IconButton, Paper, Tab, Table, TableBody, TableCell, TableContainer, TableRow, Tabs } from "@mui/material"
 import { TabPanel } from "@/components/layout/TabComponents";
-import { AccountState, ICategories, IUserState, setShowEditCategoriesModal } from "@/store/UserStore";
+import { AccountState, ICategories, IUserState, setDataDeleteCategoriesModal, setDataEditCategoriesModal, setShowDeleteCategoriesModal, setShowEditCategoriesModal } from "@/store/UserStore";
 import AddCategoriesModal from "@/components/modals/AddEditCategories/AddCategoriesModal";
+import EditCategoriesModal from "@/components/modals/AddEditCategories/EditModal";
+import DeleteModal from "@/components/modals/AddEditCategories/DeleteModal";
 
 
 function a11yProps(index: number) {
@@ -17,20 +19,16 @@ function a11yProps(index: number) {
     };
 }
 const CategoriesPage = () => {
+
     const [tabValue, setTabValue] = useState<number>(0);
     const [open, setOpen] = useState(false);
 
 
-    const { user } = useSnapshot(AccountState) as IUserState;
+    const { user, dataEditCategoriesModal } = useSnapshot(AccountState) as IUserState;
 
     const handleChange = (event: React.SyntheticEvent, newValue: number): void => {
         setTabValue(newValue);
     };
-
-    const handleEditCategory = (categories: ICategories) => {
-        setShowEditCategoriesModal(true, categories)
-    }
-
     return (
         <section className='flex flex-col gap-y-4 items-center bg-white rounded shadow-md mx-auto my-16 px-6 py-4 max-w-max'>
             <div className="font-semibold text-2xl">
@@ -51,6 +49,7 @@ const CategoriesPage = () => {
                         <Add />
                     </Button>
                     <AddCategoriesModal open={open} setOpen={setOpen} />
+                    {/* <EditCategoriesModal openEditModal={openEditModal} setOpenEditModal={setOpenEditModal} /> */}
                 </div>
                 <TabPanel value={tabValue} index={0}>
                     <TableContainer component={Paper}>
@@ -66,10 +65,20 @@ const CategoriesPage = () => {
                                                 {categories.categoryName}
                                             </TableCell>
                                             <TableCell align="right">
-                                                <IconButton aria-label="edit" onClick={() => handleEditCategory(categories)}>
+                                                <IconButton aria-label="edit" onClick={() => {
+                                                    const updatedUser: ICategories = {
+                                                        ...dataEditCategoriesModal,
+                                                        ...categories
+                                                    };
+                                                    setDataEditCategoriesModal(updatedUser);
+                                                    setShowEditCategoriesModal(true)
+                                                }}>
                                                     <EditIcon color="primary" />
                                                 </IconButton>
-                                                <IconButton aria-label="delete">
+                                                <IconButton aria-label="delete" onClick={() => {
+                                                    setDataDeleteCategoriesModal(categories._id)
+                                                    setShowDeleteCategoriesModal(true)
+                                                }}>
                                                     <DeleteIcon color="secondary" />
                                                 </IconButton>
                                             </TableCell>
@@ -86,7 +95,7 @@ const CategoriesPage = () => {
                             <TableBody>
                                 {
                                     user.categories.map((categories) => categories.categoryType == "1" && (
-                                        <TableRow key={categories.categoryName}>
+                                        <TableRow key={categories._id}>
                                             <TableCell padding="checkbox">
                                                 <SellOutlined />
                                             </TableCell>
@@ -94,10 +103,20 @@ const CategoriesPage = () => {
                                                 {categories.categoryName}
                                             </TableCell>
                                             <TableCell align="right">
-                                                <IconButton aria-label="edit" onClick={() => handleEditCategory(categories)} >
+                                                <IconButton aria-label="edit" onClick={() => {
+                                                    const updatedUser: ICategories = {
+                                                        ...dataEditCategoriesModal,
+                                                        ...categories
+                                                    };
+                                                    setDataEditCategoriesModal(updatedUser);
+                                                    setShowEditCategoriesModal(true)
+                                                }} >
                                                     <EditIcon color="primary" />
                                                 </IconButton>
-                                                <IconButton aria-label="delete">
+                                                <IconButton aria-label="delete" onClick={() => {
+                                                    setDataDeleteCategoriesModal(categories._id)
+                                                    setShowDeleteCategoriesModal(true)
+                                                }}>
                                                     <DeleteIcon color="secondary" />
                                                 </IconButton>
                                             </TableCell>
@@ -109,6 +128,8 @@ const CategoriesPage = () => {
                     </TableContainer>
                 </TabPanel>
             </div>
+            <EditCategoriesModal />
+            <DeleteModal />
 
         </section>
     )

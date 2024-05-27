@@ -1,71 +1,77 @@
-import { useState } from "react";
-import { BoltOutlined, BorderColorOutlined, GridViewOutlined, SwapVertOutlined } from "@mui/icons-material";
-import { Box, Button, MenuItem, Modal, Select, SelectChangeEvent, TextField } from "@mui/material"
-import { useSnapshot } from "valtio";
+import { Box, Button, MenuItem, Modal, Select, SelectChangeEvent, TextField } from '@mui/material'
+import React, { useState } from 'react'
+import { StyledDiv, StyledLabel, style } from './AddCategoriesStyles'
+import ModalTitle from '@/components/layout/ModalTitle'
+import { BoltOutlined, BorderColorOutlined, GridViewOutlined, SwapVertOutlined } from '@mui/icons-material'
+import { useSnapshot } from 'valtio'
+import { AccountState, ICategories, IUser, setDataEditCategoriesModal, setShowEditCategoriesModal, setUser } from '@/store/UserStore'
+import { editCategory } from '@/app/categories/api'
 
-import {
-    setUserCategories,
-    AccountState,
-    ICategories
-} from '@/store/UserStore';
-import { StyledDiv, StyledLabel, style } from "./AddCategoriesStyles";
-import { EditUserInfoModalProps } from "./types";
-import { addCategoryToUser } from "@/app/categories/api";
-import ModalTitle from "@/components/layout/ModalTitle";
-
-
-const AddCategoriesModal = ({ open, setOpen }: EditUserInfoModalProps) => {
-    const { user } = useSnapshot(AccountState);
-    const [formData, setFormData] = useState({
-        _id: "",
-        categoryName: "",
-        categoryIcon: "",
-        categoryType: "",
-        categoryDes: "",
-    })
+const EditCategoriesModal = () => {
+    const { dataEditCategoriesModal, showEditCategoriesModal, user } = useSnapshot(AccountState)
     const [fieldErrors, setFieldErrors] = useState({
         categoryName: false,
         categoryIcon: false,
         categoryType: false,
     });
-
     const handleClose = () => {
-        setOpen(false)
-    }
-
-    const handleSave = () => {
-        if (!formData.categoryName || !formData.categoryIcon || !formData.categoryType) {
-            alert("Please fill in all required fields.");
-            return;
-        }
-        const uniqId = `${Date.now()}_${formData.categoryName}`
-        const updatedFormData = {
-            ...formData,
-            _id: uniqId
-        }
-        setUserCategories(updatedFormData);
-        addCategoryToUser(updatedFormData, user._id)
-
+        setShowEditCategoriesModal(false);
     };
-    const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-        const { name, value } = e.target;
-        setFormData({ ...formData, [name]: value });
-        setFieldErrors({ ...fieldErrors, [name]: value.trim() === '' });
+
+    const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+        const { name, value } = event.target;
+        const updatedCategory: ICategories = {
+            ...dataEditCategoriesModal,
+            [name]: value
+        };
+        setDataEditCategoriesModal(updatedCategory);
+        setFieldErrors(prevErrors => ({
+            ...prevErrors,
+            [name]: value.trim() === ''
+        }));
     };
+
     const handleSelectChange = (event: SelectChangeEvent<string>) => {
         const { name, value } = event.target
-        setFormData({ ...formData, [name]: value as string });
+        const updatedCategory: ICategories = {
+            ...dataEditCategoriesModal,
+            [name]: value
+        };
+        setDataEditCategoriesModal(updatedCategory);
+        setFieldErrors(prevErrors => ({
+            ...prevErrors,
+            [name]: value.trim() === ''
+        }));
+
     };
+
+    const handleSave = async () => {
+        const res = await editCategory(dataEditCategoriesModal, user._id)
+        const updatedUser: IUser = {
+            ...user,
+            ...res
+        };
+        setUser(updatedUser)
+        setShowEditCategoriesModal(false);
+        setDataEditCategoriesModal({
+            _id: "",
+            categoryName: "",
+            categoryIcon: "",
+            categoryType: "",
+            categoryDes: ""
+        })
+    };
+
     return (
         <Modal
-            open={open || false}
+            open={showEditCategoriesModal || false}
             onClose={handleClose}
             aria-labelledby="modal-modal-title"
             aria-describedby="modal-modal-description"
         >
             <Box sx={style}>
                 <div>
-                    <ModalTitle title="Add New Category" />
+                    <ModalTitle title="Edit Category" />
                 </div>
                 <div className="flex flex-col gap-4">
                     <StyledDiv>
@@ -79,7 +85,7 @@ const AddCategoriesModal = ({ open, setOpen }: EditUserInfoModalProps) => {
                             type="text"
                             name="categoryName"
                             error={fieldErrors.categoryName}
-                            value={formData.categoryName}
+                            value={dataEditCategoriesModal.categoryName}
                             onChange={handleChange}
                             fullWidth />
                     </StyledDiv>
@@ -94,7 +100,7 @@ const AddCategoriesModal = ({ open, setOpen }: EditUserInfoModalProps) => {
                             type="text"
                             name="categoryIcon"
                             error={fieldErrors.categoryIcon}
-                            value={formData.categoryIcon}
+                            value={dataEditCategoriesModal.categoryIcon}
                             onChange={handleChange}
                             fullWidth />
                     </StyledDiv>
@@ -106,7 +112,7 @@ const AddCategoriesModal = ({ open, setOpen }: EditUserInfoModalProps) => {
                         <Select
                             id="categoryType"
                             name="categoryType"
-                            value={formData.categoryType}
+                            value={dataEditCategoriesModal.categoryType}
                             error={fieldErrors.categoryType}
                             onChange={handleSelectChange}
                         >
@@ -123,7 +129,7 @@ const AddCategoriesModal = ({ open, setOpen }: EditUserInfoModalProps) => {
                             label="Add a description (optional)"
                             type="text"
                             name="categoryDes"
-                            value={formData.categoryDes}
+                            value={dataEditCategoriesModal.categoryDes}
                             onChange={handleChange}
                             fullWidth
                             multiline
@@ -143,4 +149,4 @@ const AddCategoriesModal = ({ open, setOpen }: EditUserInfoModalProps) => {
     )
 }
 
-export default AddCategoriesModal
+export default EditCategoriesModal
