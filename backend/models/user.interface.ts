@@ -16,6 +16,7 @@ export interface ITrack {
     note?: string;
     from?: string;
     to?: string;
+    type?: string;
 }
 
 export interface IUser {

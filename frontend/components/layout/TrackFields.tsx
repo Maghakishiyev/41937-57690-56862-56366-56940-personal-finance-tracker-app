@@ -39,13 +39,16 @@ const StyledLabel = styled('label')({
 const TransactionForm: React.FC = () => {
     const [tabValue, setTabValue] = useState(0);
     const { user } = useSnapshot(AccountState) as IUserState;
-    const [incomeData, setIncomeData] = useState({
+    const [flowsData, setFlowsData] = useState({
         date: "",
         amount: "",
         category: "",
         account: "",
         note: "",
         description: "",
+        from: "",
+        to: "",
+        type: ""
     });
     const [fieldErrors, setFieldErrors] = React.useState({
         date: false,
@@ -61,29 +64,45 @@ const TransactionForm: React.FC = () => {
     const incomeDateISO = (e: React.ChangeEvent<HTMLInputElement>) => {
         const { name, value } = e.target;
         const birthday = value.substring(0, 10);
-        setIncomeData({ ...incomeData, [name]: birthday });
+        setFlowsData({ ...flowsData, [name]: birthday });
         setFieldErrors({ ...fieldErrors, [name]: value.trim() === '' });
     }
 
     const handleIncomeChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const { name, value } = e.target;
-        setIncomeData({ ...incomeData, [name]: value })
+        setFlowsData({ ...flowsData, [name]: value })
         setFieldErrors({ ...fieldErrors, [name]: value.trim() === '' })
     }
     const handleSelectChange = (event: SelectChangeEvent<string>) => {
         const { name, value } = event.target
-        setIncomeData({ ...incomeData, [name]: value as string });
+        setFlowsData({ ...flowsData, [name]: value as string });
     };
 
+    const handleReset = () => {
+        setFlowsData({
+            date: "",
+            amount: "",
+            category: "",
+            account: "",
+            note: "",
+            description: "",
+            from: "",
+            to: "",
+            type: ""
+        });
+    }
+
     const handleSave = () => {
-        if (!incomeData.account || !incomeData.amount || !incomeData.date) {
-            alert("Please fill in all required fields.");
-            return;
-        }
-        const uniqId = `${Date.now()}_${incomeData.amount}`
+        console.log(flowsData);
+        // if (!flowsData.account || !flowsData.amount || !flowsData.date) {
+        //     alert("Please fill in all required fields.");
+        //     return;
+        // }
+        const uniqId = `${Date.now()}_${flowsData.amount}`
         const updatedFormData = {
-            ...incomeData,
-            _id: uniqId
+            ...flowsData,
+            _id: uniqId,
+            type: tabValue.toString(),
         }
         setUserTracks(updatedFormData);
         addTrackToUser(updatedFormData, user._id)
@@ -108,7 +127,7 @@ const TransactionForm: React.FC = () => {
                         id='date'
                         type="date"
                         name='date'
-                        value={incomeData.date}
+                        value={flowsData.date}
                         onChange={incomeDateISO}
                         fullWidth
                     />
@@ -122,7 +141,7 @@ const TransactionForm: React.FC = () => {
                         label="Amount"
                         type="number"
                         name='amount'
-                        value={incomeData.amount}
+                        value={flowsData.amount}
                         onChange={handleIncomeChange}
                         fullWidth
                     />
@@ -135,7 +154,7 @@ const TransactionForm: React.FC = () => {
                     <Select
                         id="category"
                         name="category"
-                        value={incomeData.category}
+                        value={flowsData.category}
                         error={fieldErrors.category}
                         onChange={handleSelectChange}
                     >
@@ -161,7 +180,7 @@ const TransactionForm: React.FC = () => {
                     <Select
                         id="account"
                         name="account"
-                        value={incomeData.account}
+                        value={flowsData.account}
                         // error={fieldErrors.categoryType}
                         onChange={handleSelectChange}
                     >
@@ -177,7 +196,7 @@ const TransactionForm: React.FC = () => {
                         id='note'
                         name='note'
                         type='text'
-                        value={incomeData.note}
+                        value={flowsData.note}
                         onChange={handleIncomeChange}
                         label="Note"
                         fullWidth
@@ -192,7 +211,7 @@ const TransactionForm: React.FC = () => {
                         id='description'
                         name='description'
                         type='text'
-                        value={incomeData.description}
+                        value={flowsData.description}
                         onChange={handleIncomeChange}
                         label="Description"
                         fullWidth
@@ -211,7 +230,7 @@ const TransactionForm: React.FC = () => {
                                 backgroundColor: '#d32f2f'
                             }
                         }}
-                        onClick={() => console.log('Reset action')}
+                        onClick={handleReset}
                     >
                         Reset
                     </Button>
@@ -241,7 +260,7 @@ const TransactionForm: React.FC = () => {
                         id='date'
                         type="date"
                         name='date'
-                        value={incomeData.date}
+                        value={flowsData.date}
                         onChange={incomeDateISO}
                         fullWidth
                     />
@@ -255,7 +274,8 @@ const TransactionForm: React.FC = () => {
                         label="Amount"
                         type="number"
                         name='amount'
-                        value={handleIncomeChange}
+                        onChange={handleIncomeChange}
+                        value={flowsData.amount}
                         fullWidth
                     />
                 </StyledDiv>
@@ -267,7 +287,7 @@ const TransactionForm: React.FC = () => {
                     <Select
                         id="category"
                         name="category"
-                        value={incomeData.category}
+                        value={flowsData.category}
                         error={fieldErrors.category}
                         onChange={handleSelectChange}
                     >
@@ -291,9 +311,9 @@ const TransactionForm: React.FC = () => {
                         Account
                     </StyledLabel>
                     <Select
-                        id="categoryType"
-                        name="categoryType"
-                        // value={formData.categoryType}
+                        id="account"
+                        name="account"
+                        value={flowsData.account}
                         // error={fieldErrors.categoryType}
                         onChange={handleSelectChange}
                     >
@@ -309,7 +329,8 @@ const TransactionForm: React.FC = () => {
                         id='note'
                         name='note'
                         type='text'
-                        value={incomeData.note}
+                        value={flowsData.note}
+                        onChange={handleIncomeChange}
                         label="Note"
                         fullWidth
                     />
@@ -323,7 +344,8 @@ const TransactionForm: React.FC = () => {
                         id='description'
                         name='description'
                         type='text'
-                        value={incomeData.description}
+                        value={flowsData.description}
+                        onChange={handleIncomeChange}
                         label="Description"
                         fullWidth
                         multiline
@@ -341,7 +363,7 @@ const TransactionForm: React.FC = () => {
                                 backgroundColor: '#d32f2f'
                             }
                         }}
-                        onClick={() => console.log('Reset action')}
+                        onClick={handleReset}
                     >
                         Reset
                     </Button>
@@ -355,7 +377,7 @@ const TransactionForm: React.FC = () => {
                                 backgroundColor: '#1976d2'
                             }
                         }}
-                        onClick={() => console.log('Save action')}
+                        onClick={handleSave}
                     >
                         Save
                     </Button>
@@ -367,42 +389,90 @@ const TransactionForm: React.FC = () => {
                         <CalendarMonthOutlined />
                         Date
                     </StyledLabel>
-                    <TextField label="" type="date" fullWidth />
+                    <TextField
+                        id='date'
+                        type="date"
+                        name='date'
+                        value={flowsData.date}
+                        onChange={incomeDateISO}
+                        fullWidth
+                    />
                 </StyledDiv>
                 <StyledDiv>
                     <StyledLabel htmlFor="">
                         <MonetizationOnOutlined />
                         Amount
                     </StyledLabel>
-                    <TextField label="Amount" type="number" fullWidth />
+                    <TextField
+                        label="Amount"
+                        type="number"
+                        name='amount'
+                        onChange={handleIncomeChange}
+                        value={flowsData.amount}
+                        fullWidth
+                    />
                 </StyledDiv>
                 <StyledDiv>
                     <StyledLabel htmlFor="">
-                        <ArrowUpward />
+                        <PeopleAltOutlined />
                         From
                     </StyledLabel>
-                    <TextField label="Category" select fullWidth />
+                    <Select
+                        id="from"
+                        name="from"
+                        value={flowsData.from}
+                        // error={fieldErrors.categoryType}
+                        onChange={handleSelectChange}
+                    >
+                        <MenuItem value={"bankA"} className='flex flex-row justify-between'>Bank A</MenuItem>
+                    </Select>
                 </StyledDiv>
                 <StyledDiv>
                     <StyledLabel htmlFor="">
-                        <ArrowDownward />
+                        <PeopleAltOutlined />
                         To
                     </StyledLabel>
-                    <TextField label="Account" select fullWidth />
+                    <Select
+                        id="to"
+                        name="to"
+                        value={flowsData.to}
+                        // error={fieldErrors.categoryType}
+                        onChange={handleSelectChange}
+                    >
+                        <MenuItem value={"bankB"} className='flex flex-row justify-between'>Bank B</MenuItem>
+                    </Select>
                 </StyledDiv>
                 <StyledDiv>
                     <StyledLabel htmlFor="">
                         <CreateOutlined />
                         Note
                     </StyledLabel>
-                    <TextField label="Note" fullWidth />
+                    <TextField
+                        id='note'
+                        name='note'
+                        type='text'
+                        value={flowsData.note}
+                        onChange={handleIncomeChange}
+                        label="Note"
+                        fullWidth
+                    />
                 </StyledDiv>
                 <StyledDiv>
                     <StyledLabel htmlFor="">
                         <BorderColorOutlined />
                         Description
                     </StyledLabel>
-                    <TextField label="Description" fullWidth multiline rows={4} />
+                    <TextField
+                        id='description'
+                        name='description'
+                        type='text'
+                        value={flowsData.description}
+                        onChange={handleIncomeChange}
+                        label="Description"
+                        fullWidth
+                        multiline
+                        rows={4}
+                    />
                 </StyledDiv>
                 <StyledDivButtons>
                     <Button
@@ -415,7 +485,7 @@ const TransactionForm: React.FC = () => {
                                 backgroundColor: '#d32f2f'
                             }
                         }}
-                        onClick={() => console.log('Reset action')}
+                        onClick={handleReset}
                     >
                         Reset
                     </Button>
@@ -429,7 +499,7 @@ const TransactionForm: React.FC = () => {
                                 backgroundColor: '#1976d2'
                             }
                         }}
-                        onClick={() => console.log('Save action')}
+                        onClick={handleSave}
                     >
                         Save
                     </Button>

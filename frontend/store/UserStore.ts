@@ -18,6 +18,7 @@ export interface ITrack {
     note?: string;
     from?: string;
     to?: string;
+    type: string;
 }
 
 export interface IUser {
@@ -67,7 +68,6 @@ export const setUserCategories = (categories: ICategories) => {
 }
 
 export const setUserTracks = (track: ITrack) => {
-    console.log('track', track);
     AccountState.user.track.push(track)
 }
 

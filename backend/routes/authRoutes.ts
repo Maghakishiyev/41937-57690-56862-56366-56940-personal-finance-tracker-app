@@ -105,6 +105,7 @@ router.post(`/addCategory/:id`, authCheck, async (req: Request, res: Response) =
 router.post(`/addTrack/:id`, authCheck, async (req: Request, res: Response) => {
     const { id } = req.params;
     const data = { ...req.body };
+    console.log("data", data);
 
     try {
         const user = await User.findById(id)
