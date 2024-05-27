@@ -11,6 +11,7 @@ const categorySchema = new Schema({
 const trackSchema = new Schema({
     date: { type: String, required: true },
     amount: { type: String, required: true },
+    type: { type: String },
     category: { type: String },
     account: { type: String },
     note: { type: String },

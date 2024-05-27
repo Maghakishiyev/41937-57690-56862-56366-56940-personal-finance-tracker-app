@@ -6,6 +6,7 @@ import { hashPassword } from '../utils/hashPassword';
 import { authCheck } from '../middleware';
 import config from '../configs';
 import { getDefaultCategories } from '../src/defaultCategories';
+import { ICategory } from '../models/user.interface';
 import { DEFAULT_ACCOUNTS } from '../src/getDefaultAccounts';
 import { Account } from '../models/account.model';
 
@@ -120,9 +121,64 @@ router.post(
     }
 );
 
+router.put(`/user/:userId/category/:categoryId`, authCheck, async (req: Request, res: Response) => {
+    const { userId, categoryId } = req.params;
+    const updateData = req.body;
+    try {
+        const user = await User.findById(userId);
+        if (!user) { return res.status(404).send('User not found'); }
+
+        const categories = user.categories;
+        const category: any = []
+
+        categories.map((item) => item._id == categoryId && category.push(item))
+        if (!category) {
+            return res.status(404).json({ message: 'Category not found' });
+        }
+
+        category[0].categoryName = updateData.categoryName || category.categoryName;
+        category[0].categoryIcon = updateData.categoryIcon || category.categoryIcon;
+        category[0].categoryType = updateData.categoryType || category.categoryType;
+        category[0].categoryDes = updateData.categoryDes || category.categoryDes;
+
+        await user.save();
+        res.send(user);
+    } catch (error) {
+        console.error('Server error while updating category:', error);
+        res.status(500).json({ message: 'Server error while updating category' });
+    }
+
+})
+
+router.delete(`/user/:userId/category/:categoryId`, authCheck, async (req: Request, res: Response) => {
+    const { userId, categoryId } = req.params;
+
+    try {
+        const user = await User.findById(userId);
+        if (!user) {
+            return res.status(404).send('User not found');
+        }
+
+        const originalLength = user.categories.length;
+        user.categories = user.categories.filter(category => category._id.toString() !== categoryId);
+
+        if (user.categories.length === originalLength) {
+            return res.status(404).json({ message: 'Category not found' });
+        }
+
+        await user.save();
+        res.send(user);
+    } catch (error) {
+        console.error('Server error while deleting category:', error);
+        res.status(500).json({ message: 'Server error while deleting category' });
+    }
+
+})
+
 router.post(`/addTrack/:id`, authCheck, async (req: Request, res: Response) => {
     const { id } = req.params;
     const data = { ...req.body };
+    console.log("data", data);
 
     try {
         const user = await User.findById(id);

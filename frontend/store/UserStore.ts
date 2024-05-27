@@ -18,6 +18,7 @@ export interface ITrack {
     note?: string;
     from?: string;
     to?: string;
+    type: string;
 }
 
 export interface IUser {
@@ -36,8 +37,11 @@ export interface IUserState {
     user: IUser;
     isUserLoading: boolean;
     isUserLoggedIn: boolean;
+    dataEditCategoriesModal: ICategories;
     showEditCategoriesModal: boolean;
-    editCategory: ICategories[];
+    dataDeleteCategoriesModal: string;
+    showDeleteCategoriesModal: boolean;
+
 }
 
 export const AccountState = proxy<IUserState>({
@@ -54,8 +58,16 @@ export const AccountState = proxy<IUserState>({
     },
     isUserLoading: false,
     isUserLoggedIn: false,
+    dataEditCategoriesModal: {
+        _id: "",
+        categoryName: "",
+        categoryIcon: "",
+        categoryType: "",
+        categoryDes: ""
+    },
     showEditCategoriesModal: false,
-    editCategory: []
+    dataDeleteCategoriesModal: "",
+    showDeleteCategoriesModal: false,
 });
 
 export const setUser = (user: IUser) => {
@@ -67,7 +79,6 @@ export const setUserCategories = (categories: ICategories) => {
 }
 
 export const setUserTracks = (track: ITrack) => {
-    console.log('track', track);
     AccountState.user.track.push(track)
 }
 
@@ -79,7 +90,20 @@ export const setIsUserLoggedIn = (leggedIn: boolean) => {
     AccountState.isUserLoggedIn = leggedIn;
 };
 
-export const setShowEditCategoriesModal = (show: boolean, categories: ICategories) => {
-    AccountState.isUserLoggedIn = show;
-    AccountState.editCategory.push(categories)
-};
+export const setDataEditCategoriesModal = (category: ICategories) => {
+    // console.log(category);
+    AccountState.dataEditCategoriesModal = category
+}
+
+export const setShowEditCategoriesModal = (show: boolean) => {
+    AccountState.showEditCategoriesModal = show
+}
+
+export const setDataDeleteCategoriesModal = (category: string) => {
+    // console.log(category);
+    AccountState.dataDeleteCategoriesModal = category
+}
+
+export const setShowDeleteCategoriesModal = (show: boolean) => {
+    AccountState.showDeleteCategoriesModal = show
+}

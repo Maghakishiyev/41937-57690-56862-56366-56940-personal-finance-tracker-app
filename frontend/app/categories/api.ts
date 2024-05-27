@@ -20,3 +20,37 @@ export async function addCategoryToUser(category: ICategories, userId: string) {
         throw new Error('An unknown error occurred');
     }
 }
+
+export async function editCategory(category: ICategories, userId: string) {
+    try {
+        const token = localStorage.getItem('token');
+        const response = await axios.put(`${API_BASE_URL}/user/${userId}/category/${category._id}`, category, {
+            headers: {
+                'Authorization': `Bearer ${token}`
+            }
+        });
+        return response.data;
+    } catch (error) {
+        if (axios.isAxiosError(error)) {
+            throw new Error(error.response?.data.message || 'An error occurred during saving category.');
+        }
+        throw new Error('An unknown error occurred');
+    }
+}
+
+export async function deleteCategory(categoryId: string, userId: string) {
+    try {
+        const token = localStorage.getItem('token');
+        const response = await axios.delete(`${API_BASE_URL}/user/${userId}/category/${categoryId}`, {
+            headers: {
+                'Authorization': `Bearer ${token}`
+            }
+        });
+        return response.data;
+    } catch (error) {
+        if (axios.isAxiosError(error)) {
+            throw new Error(error.response?.data.message || 'An error occurred during saving category.');
+        }
+        throw new Error('An unknown error occurred');
+    }
+}

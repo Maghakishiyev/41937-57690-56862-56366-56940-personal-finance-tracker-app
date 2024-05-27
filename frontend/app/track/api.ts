@@ -15,7 +15,7 @@ export async function addTrackToUser(track: ITrack, userId: string) {
         return response.data;
     } catch (error) {
         if (axios.isAxiosError(error)) {
-            throw new Error(error.response?.data.message || 'An error occurred during saving category.');
+            throw new Error(error.response?.data.message || 'An error occurred during saving track.');
         }
         throw new Error('An unknown error occurred');
     }
