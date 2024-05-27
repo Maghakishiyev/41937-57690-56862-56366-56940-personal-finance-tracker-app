@@ -3,10 +3,12 @@ import bcryptjs from 'bcryptjs';
 import { User } from '../models/user.model';
 import jwt from 'jsonwebtoken';
 import { hashPassword } from '../utils/hashPassword';
-import { authCheck } from '../middleware'
+import { authCheck } from '../middleware';
 import config from '../configs';
 import { getDefaultCategories } from '../src/defaultCategories';
 import { ICategory } from '../models/user.interface';
+import { DEFAULT_ACCOUNTS } from '../src/getDefaultAccounts';
+import { Account } from '../models/account.model';
 
 const router = express.Router();
 
@@ -20,7 +22,7 @@ router.post('/signup', async (req: Request, res: Response) => {
             email,
             password: hashedPassword,
             categories: getDefaultCategories(),
-            tracks: []
+            tracks: [],
         });
 
         await user.save();
@@ -28,6 +30,13 @@ router.post('/signup', async (req: Request, res: Response) => {
         const token = jwt.sign({ userId: user._id }, JWT_SECRET, {
             expiresIn: '1h',
         });
+
+        const defaultAccounts = DEFAULT_ACCOUNTS.map((account) => ({
+            userId: user._id,
+            ...account,
+        }));
+
+        await Account.insertMany(defaultAccounts);
 
         res.status(201).json({ user: { ...user }, token });
     } catch (error) {
@@ -65,18 +74,21 @@ router.post('/signin', async (req: Request, res: Response) => {
 
 router.put(`/user/:id`, authCheck, async (req: Request, res: Response) => {
     const { id } = req.params;
-    const { email, firstName, lastName, userName, birthday, imageFile } = req.body;
+    const { email, firstName, lastName, userName, birthday, imageFile } =
+        req.body;
     try {
-        const updatedUser = await User.findByIdAndUpdate(id, {
-            email,
-            firstName,
-            lastName,
-            userName,
-            birthday,
-            imageFile
-        }, { new: true, runValidators: true, overwrite: true }); // Ensure the entire document is replaced
-
-
+        const updatedUser = await User.findByIdAndUpdate(
+            id,
+            {
+                email,
+                firstName,
+                lastName,
+                userName,
+                birthday,
+                imageFile,
+            },
+            { new: true, runValidators: true, overwrite: true }
+        ); // Ensure the entire document is replaced
 
         if (!updatedUser) {
             return res.status(404).send('User not found.');
@@ -86,22 +98,28 @@ router.put(`/user/:id`, authCheck, async (req: Request, res: Response) => {
     } catch (error) {
         res.status(500).send(error);
     }
-})
+});
 
-router.post(`/addCategory/:id`, authCheck, async (req: Request, res: Response) => {
-    const { id } = req.params;
-    try {
-        const user = await User.findById(id)
-        if (!user) { return res.status(404).send('User not found'); }
+router.post(
+    `/addCategory/:id`,
+    authCheck,
+    async (req: Request, res: Response) => {
+        const { id } = req.params;
+        try {
+            const user = await User.findById(id);
+            if (!user) {
+                return res.status(404).send('User not found');
+            }
 
-        user.categories.push(req.body);
-        await user.save();
-        res.status(201).send(user);
-    } catch (error) {
-        console.error('Error adding category:', error);
-        res.status(500).send('Server error');
+            user.categories.push(req.body);
+            await user.save();
+            res.status(201).send(user);
+        } catch (error) {
+            console.error('Error adding category:', error);
+            res.status(500).send('Server error');
+        }
     }
-})
+);
 
 router.put(`/user/:userId/category/:categoryId`, authCheck, async (req: Request, res: Response) => {
     const { userId, categoryId } = req.params;
@@ -163,23 +181,22 @@ router.post(`/addTrack/:id`, authCheck, async (req: Request, res: Response) => {
     console.log("data", data);
 
     try {
-        const user = await User.findById(id)
-        if (!user) { return res.status(404).send('User not found') }
+        const user = await User.findById(id);
+        if (!user) {
+            return res.status(404).send('User not found');
+        }
 
         if (!user.tracks) {
             user.tracks = [];
         }
 
-        user.tracks.push(data)
+        user.tracks.push(data);
         await user.save();
-        res.status(201).send(user)
+        res.status(201).send(user);
     } catch (error) {
         console.error('Error adding track:', error);
         res.status(500).send('Server error');
     }
-})
-
+});
 
 export default router;
-
-

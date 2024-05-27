@@ -10,12 +10,14 @@ import { usePathname, useRouter } from 'next/navigation';
 import { useCallback, useEffect } from 'react';
 import { useSnapshot } from 'valtio';
 import { useAuthRedirect } from './authRedirect';
+import UserAccountsStore from '@/store/UserAccountsStore';
 
 const Header: React.FC = () => {
     const router = useRouter();
-    const pathname = usePathname()
+    const pathname = usePathname();
     const { isUserLoading, isUserLoggedIn, user } = useSnapshot(AccountState);
-    const userInfo = { ...user }
+    const { resetUserAccounts } = UserAccountsStore;
+    const userInfo = { ...user };
     const signOutClickHandler = useCallback(() => {
         setIsUserLoading(true);
         setUser({
@@ -26,14 +28,17 @@ const Header: React.FC = () => {
             userName: '',
             imageFile: '',
             birthday: '',
-            categories: []
+            categories: [],
+            track: [],
         });
+        resetUserAccounts();
         setIsUserLoggedIn(false);
         setIsUserLoading(false);
+        localStorage.removeItem('token');
         router.replace('/');
     }, []);
 
-    useAuthRedirect({ isUserLoading, isUserLoggedIn })
+    useAuthRedirect({ isUserLoading, isUserLoggedIn });
 
     return (
         <header className='bg-blue-800 flex justify-between items-center px-8 py-3'>
@@ -58,19 +63,33 @@ const Header: React.FC = () => {
                                 <span className='text-white text-lg cursor-pointer'>
                                     Profile
                                 </span>
-                                {pathname == '/profile' && <span className='absolute left-0 bottom-0 h-0.5 w-full bg-white'></span>}
+                                {pathname == '/profile' && (
+                                    <span className='absolute left-0 bottom-0 h-0.5 w-full bg-white'></span>
+                                )}
                             </Link>
                             <Link className='relative' href='/track'>
                                 <span className='text-white text-lg cursor-pointer'>
                                     Track
                                 </span>
-                                {pathname == '/track' && <span className='absolute left-0 bottom-0 h-0.5 w-full bg-white'></span>}
+                                {pathname == '/track' && (
+                                    <span className='absolute left-0 bottom-0 h-0.5 w-full bg-white'></span>
+                                )}
                             </Link>
                             <Link className='relative' href='/categories'>
                                 <span className='text-white text-lg cursor-pointer'>
                                     Categories
                                 </span>
-                                {pathname == '/categories' && <span className='absolute left-0 bottom-0 h-0.5 w-full bg-white'></span>}
+                                {pathname == '/categories' && (
+                                    <span className='absolute left-0 bottom-0 h-0.5 w-full bg-white'></span>
+                                )}
+                            </Link>
+                            <Link className='relative' href='/accounts'>
+                                <span className='text-white text-lg cursor-pointer'>
+                                    Accounts
+                                </span>
+                                {pathname == '/accounts' && (
+                                    <span className='absolute left-0 bottom-0 h-0.5 w-full bg-white'></span>
+                                )}
                             </Link>
                         </div>
                     )}
