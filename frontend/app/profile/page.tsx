@@ -6,14 +6,16 @@ import {
     MonthlyReportContainer,
     ProfileInfoContainer,
 } from '@/components/ProfileComponents';
-import { AccountState } from '@/store/UserStore';
+import { IUserState, UserState } from '@/store/UserStore';
 import { useRouter } from 'next/navigation';
 import { useEffect } from 'react';
 import { useSnapshot } from 'valtio';
 
 const ProfilePage = () => {
     const router = useRouter();
-    const { isUserLoading, isUserLoggedIn } = useSnapshot(AccountState);
+    const { isUserLoading, isUserLoggedIn } = useSnapshot(
+        UserState
+    ) as IUserState;
 
     useEffect(() => {
         if (!isUserLoading && !isUserLoggedIn) {

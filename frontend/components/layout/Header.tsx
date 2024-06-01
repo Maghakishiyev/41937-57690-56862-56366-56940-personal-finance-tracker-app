@@ -1,6 +1,7 @@
 'use client';
 import {
-    AccountState,
+    IUserState,
+    UserState,
     setIsUserLoading,
     setIsUserLoggedIn,
     setUser,
@@ -12,14 +13,17 @@ import { useSnapshot } from 'valtio';
 import { useAuthRedirect } from './authRedirect';
 import UserAccountsStore from '@/store/UserAccountsStore';
 import CategoriesStore from '@/store/CategoriesStore';
+import TrackStore from '@/store/TracksStore';
 
 const Header: React.FC = () => {
     const router = useRouter();
     const pathname = usePathname();
-    const { isUserLoading, isUserLoggedIn, user } = useSnapshot(AccountState);
+    const { isUserLoading, isUserLoggedIn, user } = useSnapshot(
+        UserState
+    ) as IUserState;
     const { resetUserAccounts } = UserAccountsStore;
     const { resetCategories } = CategoriesStore;
-    const userInfo = { ...user };
+    const { resetTracks } = TrackStore;
     const signOutClickHandler = useCallback(() => {
         setIsUserLoading(true);
         setUser({
@@ -30,8 +34,8 @@ const Header: React.FC = () => {
             userName: '',
             imageFile: '',
             birthday: '',
-            track: [],
         });
+        resetTracks();
         resetCategories();
         resetUserAccounts();
         setIsUserLoggedIn(false);
@@ -113,7 +117,7 @@ const Header: React.FC = () => {
             ) : (
                 <div className='flex flex-row gap-x-3 items-center'>
                     <span className='cursor-pointer text-white'>
-                        {userInfo.userName}
+                        {user.userName}
                     </span>
                     <button
                         onClick={signOutClickHandler}

@@ -1,12 +1,12 @@
 'use client';
 import { Avatar, Button } from '@mui/material';
-import { AccountState, IUser, IUserState, setUser } from '@/store/UserStore';
+import { UserState, IUser, IUserState, setUser } from '@/store/UserStore';
 import React from 'react';
 import { useSnapshot } from 'valtio';
 import { CloudUpload } from '@mui/icons-material';
 
 const EditableImage = () => {
-    const state = useSnapshot(AccountState) as IUserState;
+    const state = useSnapshot(UserState) as IUserState;
     const handleImageChange = async (
         event: React.ChangeEvent<HTMLInputElement>
     ) => {

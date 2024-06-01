@@ -35,7 +35,10 @@ router.post('/signin', async (req: Request, res: Response) => {
         const token = jwt.sign({ userId: user._id }, JWT_SECRET, {
             expiresIn: '1h',
         });
-        res.json({ user: { ...user }, token });
+
+        const { password: _removed, ...userWithoutPassword } = user?.toObject();
+
+        res.json({ user: userWithoutPassword, token });
     } catch (error) {
         console.error(error);
         res.status(500).json({ message: 'Server error' });
@@ -49,7 +52,6 @@ router.post('/signup', async (req: Request, res: Response) => {
         const user = new User({
             email,
             password: hashedPassword,
-            tracks: [],
         });
 
         await user.save(); // Save the user first
@@ -74,7 +76,10 @@ router.post('/signup', async (req: Request, res: Response) => {
         const token = jwt.sign({ userId: user._id }, JWT_SECRET, {
             expiresIn: '1h',
         });
-        res.status(201).json({ user: user.toObject(), token });
+
+        const { password: _removed, ...userWithoutPassword } = user?.toObject();
+
+        res.status(201).json({ user: userWithoutPassword, token });
     } catch (error) {
         res.status(500).json({ message: 'Error creating the user', error });
     }
@@ -105,30 +110,6 @@ router.put(`/user/:id`, authCheck, async (req: Request, res: Response) => {
         res.json(updatedUser);
     } catch (error) {
         res.status(500).send(error);
-    }
-});
-
-router.post(`/addTrack/:id`, authCheck, async (req: Request, res: Response) => {
-    const { id } = req.params;
-    const data = { ...req.body };
-    console.log('data', data);
-
-    try {
-        const user = await User.findById(id);
-        if (!user) {
-            return res.status(404).send('User not found');
-        }
-
-        if (!user.tracks) {
-            user.tracks = [];
-        }
-
-        user.tracks.push(data);
-        await user.save();
-        res.status(201).send(user);
-    } catch (error) {
-        console.error('Error adding track:', error);
-        res.status(500).send('Server error');
     }
 });
 

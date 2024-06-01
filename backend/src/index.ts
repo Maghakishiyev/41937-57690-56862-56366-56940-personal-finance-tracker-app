@@ -7,6 +7,7 @@ import authRoutes from '../routes/AuthRoutes';
 import uploadImg from '../routes/uploadImg';
 import accountRoutes from '../routes/AccountRoutes';
 import categoryRoutes from '../routes/CategoryRoutes';
+import trackRoutes from '../routes/TrackRoutes';
 
 dotenv.config();
 
@@ -36,6 +37,7 @@ app.use('/api/auth', authRoutes);
 app.use('/upload', uploadImg);
 app.use('/api/accounts', accountRoutes);
 app.use('/api/categories', categoryRoutes);
+app.use('/api/tracks', trackRoutes);
 
 app.listen(parseInt(PORT, 10), () => {
     console.log(`Server is listening on port ${PORT}`);

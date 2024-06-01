@@ -10,11 +10,12 @@ import { signIn } from './api';
 import { useRouter } from 'next/navigation';
 import { useSnapshot } from 'valtio';
 import {
-    AccountState,
+    UserState,
     IUser,
     setIsUserLoading,
     setIsUserLoggedIn,
     setUser,
+    IUserState,
 } from '@/store/UserStore';
 
 const LoginPage = () => {
@@ -29,7 +30,9 @@ const LoginPage = () => {
     });
     const [errorMessage, setErrorMessage] = useState('');
 
-    const { isUserLoading, isUserLoggedIn, user } = useSnapshot(AccountState);
+    const { isUserLoading, isUserLoggedIn, user } = useSnapshot(
+        UserState
+    ) as IUserState;
 
     useEffect(() => {
         if (!isUserLoading && isUserLoggedIn && user._id) {
@@ -61,11 +64,13 @@ const LoginPage = () => {
         setIsUserLoading(true);
         try {
             const response = await signIn(formData);
-            localStorage.setItem('token', response.token)
+            localStorage.setItem('token', response.token);
+
             const updatedUser: IUser = {
                 ...user,
-                ...(response as any).user._doc
+                ...response.user,
             };
+
             setUser(updatedUser);
             setIsUserLoggedIn(true);
         } catch (error: any) {
@@ -76,8 +81,9 @@ const LoginPage = () => {
     };
 
     const getInputClass = (fieldName: keyof typeof fieldErrors) => {
-        return `appearance-none border ${fieldErrors[fieldName] ? 'border-[#F36C6C]' : 'border-gray-300'
-            } rounded w-[420px] py-3 px-3 text-[#070707] leading-tight focus:outline-none focus:shadow-outline focus:border-primary`;
+        return `appearance-none border ${
+            fieldErrors[fieldName] ? 'border-[#F36C6C]' : 'border-gray-300'
+        } rounded w-[420px] py-3 px-3 text-[#070707] leading-tight focus:outline-none focus:shadow-outline focus:border-primary`;
     };
 
     return (

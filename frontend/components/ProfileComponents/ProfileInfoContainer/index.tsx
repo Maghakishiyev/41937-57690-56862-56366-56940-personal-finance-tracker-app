@@ -1,6 +1,6 @@
 import EditUserInfoModal from '@/components/layout/EditUserInfoModal';
 import { shortenString } from '@/helpers';
-import { AccountState, IUserState } from '@/store/UserStore';
+import { UserState, IUserState } from '@/store/UserStore';
 import { Avatar } from '@mui/material';
 import Image from 'next/image';
 import { useRouter } from 'next/navigation';
@@ -16,12 +16,8 @@ const USER_INFO_FIELDS: { [key: string]: string } = {
 };
 
 export const ProfileInfoContainer: React.FC = () => {
-    const { user } = useSnapshot(AccountState) as IUserState;
-    const router = useRouter();
+    const { user } = useSnapshot(UserState) as IUserState;
     const [open, setOpen] = useState(false);
-    const defaultImagePath = '/frontend/public/default_profile_icon.png';
-    const img = user.imageFile ?? defaultImagePath;
-
     const renderUserInfo = useMemo(
         () =>
             Object.entries(user)?.map(([key, value]) => {
