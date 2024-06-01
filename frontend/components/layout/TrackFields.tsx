@@ -18,13 +18,12 @@ import {
     PeopleAltOutlined,
     CreateOutlined,
     BorderColorOutlined,
-    ArrowDownward,
-    ArrowUpward,
 } from '@mui/icons-material';
-import { AccountState, IUserState, setUserTracks } from '@/store/UserStore';
+import { UserState, IUserState } from '@/store/UserStore';
 import { useSnapshot } from 'valtio';
-import { addTrackToUser } from '@/app/track/api';
 import CategoriesStore from '@/store/CategoriesStore';
+import TracksStore, { ITrackContent } from '@/store/TracksStore';
+import UserAccountsStore from '@/store/UserAccountsStore';
 
 const StyledDiv = styled('div')({
     display: 'flex',
@@ -48,12 +47,18 @@ const StyledLabel = styled('label')({
 });
 
 const TransactionForm: React.FC = () => {
+    const { TrackState, addTrack } = TracksStore;
+    const { UserAccountsState, fetchAccounts } = UserAccountsStore;
     const { CategoriesState, fetchCategories } = CategoriesStore;
-    const { categories, loading } = useSnapshot(CategoriesState);
+    const { categories, loading: categoriesLoading } =
+        useSnapshot(CategoriesState);
+    const { accounts, loading: accountsLoading } =
+        useSnapshot(UserAccountsState);
+
+    const { error: tracksError } = useSnapshot(TrackState);
 
     const [tabValue, setTabValue] = useState(0);
-    const { user } = useSnapshot(AccountState) as IUserState;
-    const [flowsData, setFlowsData] = useState({
+    const [flowsData, setFlowsData] = useState<ITrackContent>({
         date: '',
         amount: '',
         category: '',
@@ -72,18 +77,37 @@ const TransactionForm: React.FC = () => {
     });
 
     useEffect(() => {
-        if (!loading && !categories?.length) {
+        if (!categoriesLoading && !categories?.length) {
             fetchCategories();
         }
-    }, [categories, loading]);
+    }, [categories, categoriesLoading]);
+
+    useEffect(() => {
+        if (!accountsLoading && !accounts?.length) {
+            fetchAccounts();
+        }
+    }, [accounts, accountsLoading]);
 
     const handleChange = (
         event: React.SyntheticEvent,
         newValue: number
     ): void => {
-        console.log('newValue', newValue);
         setTabValue(newValue);
     };
+
+    const getTabType = (tabValue: number) => {
+        switch (tabValue) {
+            case 0:
+                return 'expense';
+            case 1:
+                return 'income';
+            case 2:
+                return 'transfer';
+            default:
+                return 'expense';
+        }
+    };
+
     const incomeDateISO = (e: React.ChangeEvent<HTMLInputElement>) => {
         const { name, value } = e.target;
         const birthday = value.substring(0, 10);
@@ -115,20 +139,22 @@ const TransactionForm: React.FC = () => {
         });
     };
 
-    const handleSave = () => {
-        console.log(flowsData);
-        // if (!flowsData.account || !flowsData.amount || !flowsData.date) {
-        //     alert("Please fill in all required fields.");
-        //     return;
-        // }
-        const uniqId = `${Date.now()}_${flowsData.amount}`;
+    const handleSave = async () => {
+        if (!flowsData.account || !flowsData.amount || !flowsData.date) {
+            alert('Please fill in all required fields.');
+            return;
+        }
+
         const updatedFormData = {
             ...flowsData,
-            _id: uniqId,
-            type: tabValue.toString(),
+            type: getTabType(tabValue)?.toLowerCase(),
         };
-        setUserTracks(updatedFormData);
-        addTrackToUser(updatedFormData, user._id);
+        await addTrack(updatedFormData);
+
+        if (tracksError) {
+            console.log('Error while tracking expense', tracksError);
+            alert(tracksError);
+        }
     };
 
     return (
@@ -187,11 +213,12 @@ const TransactionForm: React.FC = () => {
                     >
                         {categories.map(
                             (category) =>
-                                category.type == tabValue.toString() && (
+                                category?.type?.toLowerCase() ===
+                                    getTabType(tabValue)?.toLowerCase() && (
                                     <MenuItem
                                         value={category._id}
                                         key={category._id}
-                                        className='flex flex-row justify-between'
+                                        className='flex flex-row justify-between gap-3'
                                     >
                                         <span>{category.name}</span>
                                         <span>{category.icon}</span>
@@ -209,15 +236,20 @@ const TransactionForm: React.FC = () => {
                         id='account'
                         name='account'
                         value={flowsData.account}
-                        // error={fieldErrors.categoryType}
+                        error={fieldErrors.account}
                         onChange={handleSelectChange}
                     >
-                        <MenuItem
-                            value={'bank'}
-                            className='flex flex-row justify-between'
-                        >
-                            Bank
-                        </MenuItem>
+                        {accounts &&
+                            accounts.map((account) => (
+                                <MenuItem value={account._id}>
+                                    <div className='w-full flex items-center justify-start gap-3'>
+                                        <span>{account.emoji}</span>
+                                        <span className='text-base text-black font-semibold'>
+                                            {account.name}
+                                        </span>
+                                    </div>
+                                </MenuItem>
+                            ))}
                     </Select>
                 </StyledDiv>
                 <StyledDiv>
@@ -326,11 +358,12 @@ const TransactionForm: React.FC = () => {
                     >
                         {categories.map(
                             (category) =>
-                                category.type == tabValue.toString() && (
+                                category?.type?.toLowerCase() ===
+                                    getTabType(tabValue)?.toLowerCase() && (
                                     <MenuItem
                                         value={category._id}
                                         key={category._id}
-                                        className='flex flex-row justify-between'
+                                        className='flex flex-row justify-between gap-3'
                                     >
                                         <span>{category.name}</span>
                                         <span>{category.icon}</span>
@@ -348,15 +381,20 @@ const TransactionForm: React.FC = () => {
                         id='account'
                         name='account'
                         value={flowsData.account}
-                        // error={fieldErrors.categoryType}
+                        error={fieldErrors.account}
                         onChange={handleSelectChange}
                     >
-                        <MenuItem
-                            value={'bank'}
-                            className='flex flex-row justify-between'
-                        >
-                            Bank
-                        </MenuItem>
+                        {accounts &&
+                            accounts.map((account) => (
+                                <MenuItem value={account._id}>
+                                    <div className='w-full flex items-center justify-start gap-3'>
+                                        <span>{account.emoji}</span>
+                                        <span className='text-base text-black font-semibold'>
+                                            {account.name}
+                                        </span>
+                                    </div>
+                                </MenuItem>
+                            ))}
                     </Select>
                 </StyledDiv>
                 <StyledDiv>
@@ -460,15 +498,20 @@ const TransactionForm: React.FC = () => {
                         id='from'
                         name='from'
                         value={flowsData.from}
-                        // error={fieldErrors.categoryType}
+                        error={fieldErrors.account}
                         onChange={handleSelectChange}
                     >
-                        <MenuItem
-                            value={'bankA'}
-                            className='flex flex-row justify-between'
-                        >
-                            Bank A
-                        </MenuItem>
+                        {accounts &&
+                            accounts.map((account) => (
+                                <MenuItem value={account._id}>
+                                    <div className='w-full flex items-center justify-start gap-3'>
+                                        <span>{account.emoji}</span>
+                                        <span className='text-base text-black font-semibold'>
+                                            {account.name}
+                                        </span>
+                                    </div>
+                                </MenuItem>
+                            ))}
                     </Select>
                 </StyledDiv>
                 <StyledDiv>
@@ -480,15 +523,20 @@ const TransactionForm: React.FC = () => {
                         id='to'
                         name='to'
                         value={flowsData.to}
-                        // error={fieldErrors.categoryType}
+                        error={fieldErrors.account}
                         onChange={handleSelectChange}
                     >
-                        <MenuItem
-                            value={'bankB'}
-                            className='flex flex-row justify-between'
-                        >
-                            Bank B
-                        </MenuItem>
+                        {accounts &&
+                            accounts.map((account) => (
+                                <MenuItem value={account._id}>
+                                    <div className='w-full flex items-center justify-start gap-3'>
+                                        <span>{account.emoji}</span>
+                                        <span className='text-base text-black font-semibold'>
+                                            {account.name}
+                                        </span>
+                                    </div>
+                                </MenuItem>
+                            ))}
                     </Select>
                 </StyledDiv>
                 <StyledDiv>

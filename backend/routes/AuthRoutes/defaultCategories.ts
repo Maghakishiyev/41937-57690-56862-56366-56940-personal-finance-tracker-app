@@ -14,5 +14,4 @@ export const DEFAULT_CATEGORIES = [
     { name: 'Petty Cash', icon: '💵', type: 'income', description: '' },
     { name: 'Bonus', icon: '🎉', type: 'income', description: '' },
     { name: 'Other', icon: '➕', type: 'income', description: '' },
-    { name: 'Other', icon: '➕', type: 'expense', description: '' },
 ];

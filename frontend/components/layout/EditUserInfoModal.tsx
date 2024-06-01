@@ -1,4 +1,4 @@
-"use client"
+'use client';
 import * as React from 'react';
 import Box from '@mui/material/Box';
 import Button from '@mui/material/Button';
@@ -6,12 +6,7 @@ import Modal from '@mui/material/Modal';
 import EditableImage from './EditableImage';
 import UserForm from './UserForm';
 import { useSnapshot } from 'valtio';
-import {
-    AccountState,
-    IUser,
-    IUserState,
-    setUser,
-} from '@/store/UserStore';
+import { UserState, IUser, IUserState, setUser } from '@/store/UserStore';
 import { updateUserData } from '@/app/profile/api';
 const style = {
     position: 'absolute' as 'absolute',
@@ -24,7 +19,6 @@ const style = {
     borderRadius: 4,
     px: 2,
     py: 3,
-
 };
 
 export interface EditUserInfoModalProps {
@@ -32,9 +26,13 @@ export interface EditUserInfoModalProps {
     setOpen: (open: boolean) => void;
 }
 
-export default function EditUserInfoModal({ open, setOpen }: EditUserInfoModalProps) {
-    const { isUserLoading, isUserLoggedIn, user } = useSnapshot(AccountState) as IUserState;
-    const state = useSnapshot(AccountState);
+export default function EditUserInfoModal({
+    open,
+    setOpen,
+}: EditUserInfoModalProps) {
+    const { isUserLoading, isUserLoggedIn, user } = useSnapshot(
+        UserState
+    ) as IUserState;
 
     const [formData, setFormData] = React.useState(user);
     const [fieldErrors, setFieldErrors] = React.useState({
@@ -51,11 +49,11 @@ export default function EditUserInfoModal({ open, setOpen }: EditUserInfoModalPr
     const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
         event.preventDefault();
         const updatedUser: IUser = {
-            ...state.user,
-            ...formData
+            ...user,
+            ...formData,
         };
         setUser(updatedUser);
-        updateUserData(user._id, formData)
+        updateUserData(user._id, formData);
     };
 
     return (
@@ -63,11 +61,14 @@ export default function EditUserInfoModal({ open, setOpen }: EditUserInfoModalPr
             <Modal
                 open={open || false}
                 onClose={handleClose}
-                aria-labelledby="modal-modal-title"
-                aria-describedby="modal-modal-description"
+                aria-labelledby='modal-modal-title'
+                aria-describedby='modal-modal-description'
             >
                 <Box sx={style}>
-                    <form onSubmit={handleSubmit} className='grid grid-cols-40-60 gap-8'>
+                    <form
+                        onSubmit={handleSubmit}
+                        className='grid grid-cols-40-60 gap-8'
+                    >
                         <EditableImage />
                         <div>
                             <UserForm
@@ -78,7 +79,13 @@ export default function EditUserInfoModal({ open, setOpen }: EditUserInfoModalPr
                             />
                         </div>
                         <div className='col-span-2 flex justify-center items-center '>
-                            <Button variant="outlined" type='submit' style={{ width: "200px" }}>Submit</Button>
+                            <Button
+                                variant='outlined'
+                                type='submit'
+                                style={{ width: '200px' }}
+                            >
+                                Submit
+                            </Button>
                         </div>
                     </form>
                 </Box>
