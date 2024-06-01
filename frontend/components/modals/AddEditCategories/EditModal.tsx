@@ -1,152 +1,130 @@
-import { Box, Button, MenuItem, Modal, Select, SelectChangeEvent, TextField } from '@mui/material'
-import React, { useState } from 'react'
-import { StyledDiv, StyledLabel, style } from './AddCategoriesStyles'
-import ModalTitle from '@/components/layout/ModalTitle'
-import { BoltOutlined, BorderColorOutlined, GridViewOutlined, SwapVertOutlined } from '@mui/icons-material'
-import { useSnapshot } from 'valtio'
-import { AccountState, ICategories, IUser, setDataEditCategoriesModal, setShowEditCategoriesModal, setUser } from '@/store/UserStore'
-import { editCategory } from '@/app/categories/api'
+import React, { useState } from 'react';
+import { Modal, Box, Button, TextField, Select, MenuItem } from '@mui/material';
+import { useSnapshot } from 'valtio';
+import CategoriesStore, { ICategory } from '@/store/CategoriesStore'; // Adjust the import path as necessary
 
-const EditCategoriesModal = () => {
-    const { dataEditCategoriesModal, showEditCategoriesModal, user } = useSnapshot(AccountState)
-    const [fieldErrors, setFieldErrors] = useState({
-        categoryName: false,
-        categoryIcon: false,
-        categoryType: false,
-    });
-    const handleClose = () => {
-        setShowEditCategoriesModal(false);
+interface EditCategoriesModalProps {
+    category: ICategory; // Passed from parent component
+    open: boolean;
+    onClose: () => void;
+}
+
+const EditCategoriesModal: React.FC<EditCategoriesModalProps> = ({
+    category,
+    open,
+    onClose,
+}) => {
+    const { updateCategory, CategoriesState, resetErrors } = CategoriesStore;
+    const { loading, error } = useSnapshot(CategoriesState);
+    const [editedCategory, setEditedCategory] = useState<ICategory>(category);
+
+    const handleChange = (
+        event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
+    ) => {
+        setEditedCategory({
+            ...editedCategory,
+            [event.target.name]: event.target.value,
+        });
     };
 
-    const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-        const { name, value } = event.target;
-        const updatedCategory: ICategories = {
-            ...dataEditCategoriesModal,
-            [name]: value
-        };
-        setDataEditCategoriesModal(updatedCategory);
-        setFieldErrors(prevErrors => ({
-            ...prevErrors,
-            [name]: value.trim() === ''
-        }));
-    };
+    const handleSelectChange = (
+        event: React.ChangeEvent<{ name?: string; value: number }>
+    ) => {
+        const name = event.target.name as keyof ICategory;
+        const type = event?.target?.value === 0 ? 'income' : 'expense';
 
-    const handleSelectChange = (event: SelectChangeEvent<string>) => {
-        const { name, value } = event.target
-        const updatedCategory: ICategories = {
-            ...dataEditCategoriesModal,
-            [name]: value
-        };
-        setDataEditCategoriesModal(updatedCategory);
-        setFieldErrors(prevErrors => ({
-            ...prevErrors,
-            [name]: value.trim() === ''
-        }));
-
+        setEditedCategory({
+            ...editedCategory,
+            [name]: type,
+        });
     };
 
     const handleSave = async () => {
-        const res = await editCategory(dataEditCategoriesModal, user._id)
-        const updatedUser: IUser = {
-            ...user,
-            ...res
-        };
-        setUser(updatedUser)
-        setShowEditCategoriesModal(false);
-        setDataEditCategoriesModal({
-            _id: "",
-            categoryName: "",
-            categoryIcon: "",
-            categoryType: "",
-            categoryDes: ""
-        })
+        await updateCategory(editedCategory);
+
+        if (error) {
+            console.log('Error while updating new category', error);
+            alert(error);
+            resetErrors();
+        }
+
+        onClose();
     };
 
     return (
         <Modal
-            open={showEditCategoriesModal || false}
-            onClose={handleClose}
-            aria-labelledby="modal-modal-title"
-            aria-describedby="modal-modal-description"
+            open={open}
+            onClose={onClose}
+            aria-labelledby='edit-category-modal-title'
+            aria-describedby='edit-category-modal-description'
         >
-            <Box sx={style}>
-                <div>
-                    <ModalTitle title="Edit Category" />
-                </div>
-                <div className="flex flex-col gap-4">
-                    <StyledDiv>
-                        <StyledLabel htmlFor="date-input">
-                            <GridViewOutlined />
-                            Name
-                        </StyledLabel>
-                        <TextField
-                            id="categoryName"
-                            label="Please write category name"
-                            type="text"
-                            name="categoryName"
-                            error={fieldErrors.categoryName}
-                            value={dataEditCategoriesModal.categoryName}
-                            onChange={handleChange}
-                            fullWidth />
-                    </StyledDiv>
-                    <StyledDiv>
-                        <StyledLabel htmlFor="">
-                            <BoltOutlined />
-                            Icon
-                        </StyledLabel>
-                        <TextField
-                            id="categoryIcon"
-                            label="Add custom category emoji (optional)"
-                            type="text"
-                            name="categoryIcon"
-                            error={fieldErrors.categoryIcon}
-                            value={dataEditCategoriesModal.categoryIcon}
-                            onChange={handleChange}
-                            fullWidth />
-                    </StyledDiv>
-                    <StyledDiv>
-                        <StyledLabel htmlFor="">
-                            <SwapVertOutlined />
-                            Type
-                        </StyledLabel>
-                        <Select
-                            id="categoryType"
-                            name="categoryType"
-                            value={dataEditCategoriesModal.categoryType}
-                            error={fieldErrors.categoryType}
-                            onChange={handleSelectChange}
-                        >
-                            <MenuItem value="0">Expense</MenuItem>
-                            <MenuItem value="1">Income</MenuItem>
-                        </Select>
-                    </StyledDiv>
-                    <StyledDiv>
-                        <StyledLabel htmlFor="">
-                            <BorderColorOutlined />
-                            Description
-                        </StyledLabel>
-                        <TextField id="categoryDes"
-                            label="Add a description (optional)"
-                            type="text"
-                            name="categoryDes"
-                            value={dataEditCategoriesModal.categoryDes}
-                            onChange={handleChange}
-                            fullWidth
-                            multiline
-                            rows={4} />
-                    </StyledDiv>
-                </div>
-                <div className="flex flex-row gap-2.5 items-center justify-end mt-9">
-                    <Button variant="outlined" onClick={handleClose} className="border-[#7D8395] text-[#7D8395] py-1.5 px-4">
+            <Box
+                sx={{
+                    margin: 'auto',
+                    p: 2,
+                    width: '400px',
+                    backgroundColor: 'white',
+                }}
+            >
+                <TextField
+                    fullWidth
+                    label='Category Name'
+                    variant='outlined'
+                    name='name'
+                    value={editedCategory.name}
+                    onChange={handleChange}
+                    margin='normal'
+                />
+                <TextField
+                    fullWidth
+                    label='Icon'
+                    variant='outlined'
+                    name='icon'
+                    value={editedCategory.icon}
+                    onChange={handleChange}
+                    margin='normal'
+                />
+                <Select
+                    fullWidth
+                    value={
+                        editedCategory?.type?.toLowerCase() === 'income' ? 0 : 1
+                    }
+                    onChange={handleSelectChange as any}
+                    name='type'
+                    displayEmpty
+                    inputProps={{ 'aria-label': 'Without label' }}
+                >
+                    <MenuItem value={0}>Income</MenuItem>
+                    <MenuItem value={1}>Expense</MenuItem>
+                </Select>
+                <TextField
+                    fullWidth
+                    label='Description'
+                    variant='outlined'
+                    name='description'
+                    value={editedCategory.description || ''}
+                    onChange={handleChange}
+                    margin='normal'
+                    multiline
+                    rows={4}
+                />
+                <Box
+                    sx={{ mt: 2, display: 'flex', justifyContent: 'flex-end' }}
+                >
+                    <Button onClick={onClose} color='primary'>
                         Cancel
                     </Button>
-                    <Button onClick={handleSave} variant="contained" className="py-1.5 px-7">
+                    <Button
+                        onClick={handleSave}
+                        color='primary'
+                        disabled={loading}
+                    >
                         Save
                     </Button>
-                </div>
+                </Box>
             </Box>
-        </Modal >
-    )
-}
+        </Modal>
+    );
+};
 
-export default EditCategoriesModal
+export default EditCategoriesModal;

@@ -1,17 +1,15 @@
-"use client"
-import { Avatar, Button } from '@mui/material'
-import {
-    AccountState,
-    IUser,
-    setUser,
-} from '@/store/UserStore';
-import React from 'react'
+'use client';
+import { Avatar, Button } from '@mui/material';
+import { AccountState, IUser, IUserState, setUser } from '@/store/UserStore';
+import React from 'react';
 import { useSnapshot } from 'valtio';
 import { CloudUpload } from '@mui/icons-material';
 
 const EditableImage = () => {
-    const state = useSnapshot(AccountState);
-    const handleImageChange = async (event: React.ChangeEvent<HTMLInputElement>) => {
+    const state = useSnapshot(AccountState) as IUserState;
+    const handleImageChange = async (
+        event: React.ChangeEvent<HTMLInputElement>
+    ) => {
         if (event.target.files && event.target.files.length > 0) {
             const file = event.target.files[0];
             if (file) {
@@ -19,13 +17,16 @@ const EditableImage = () => {
                 formData.append('imageFile', file);
                 const token = localStorage.getItem('token');
                 try {
-                    const response = await fetch('http://localhost:8080/upload/img', {
-                        method: 'POST',
-                        headers: {
-                            'Authorization': `Bearer ${token}`
-                        },
-                        body: formData,
-                    });
+                    const response = await fetch(
+                        'http://localhost:8080/upload/img',
+                        {
+                            method: 'POST',
+                            headers: {
+                                Authorization: `Bearer ${token}`,
+                            },
+                            body: formData,
+                        }
+                    );
                     const data = await response.json();
                     const updatedUser: IUser = {
                         ...state.user,
@@ -41,28 +42,39 @@ const EditableImage = () => {
         }
     };
     return (
-        <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', padding: 20 }}>
+        <div
+            style={{
+                display: 'flex',
+                flexDirection: 'column',
+                alignItems: 'center',
+                padding: 20,
+            }}
+        >
             <Avatar
                 src={state.user.imageFile}
-                alt="Profile Avatar"
+                alt='Profile Avatar'
                 sx={{ width: 120, height: 120, marginBottom: 2 }}
             />
-            <label htmlFor="upload-button">
+            <label htmlFor='upload-button'>
                 <input
-                    accept="image/*"
-                    id="upload-button"
-                    type="file"
+                    accept='image/*'
+                    id='upload-button'
+                    type='file'
                     style={{ display: 'none' }}
-                    name="imageFile"
+                    name='imageFile'
                     onChange={handleImageChange}
                 />
-                <Button variant="outlined" component="span" className='flex flex-row gap-x-2.5 items-center'>
+                <Button
+                    variant='outlined'
+                    component='span'
+                    className='flex flex-row gap-x-2.5 items-center'
+                >
                     <CloudUpload />
                     Change Image
                 </Button>
             </label>
         </div>
-    )
-}
+    );
+};
 
-export default EditableImage
+export default EditableImage;

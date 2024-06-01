@@ -1,5 +1,5 @@
 import mongoose, { Schema, Document } from 'mongoose';
-import { IUser } from './user.interface';
+import { IUser } from './interface';
 const categorySchema = new Schema({
     _id: { type: String, required: true, unique: true },
     categoryName: { type: String, required: true },

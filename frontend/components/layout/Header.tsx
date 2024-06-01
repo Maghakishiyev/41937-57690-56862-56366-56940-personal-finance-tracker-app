@@ -11,12 +11,14 @@ import { useCallback, useEffect } from 'react';
 import { useSnapshot } from 'valtio';
 import { useAuthRedirect } from './authRedirect';
 import UserAccountsStore from '@/store/UserAccountsStore';
+import CategoriesStore from '@/store/CategoriesStore';
 
 const Header: React.FC = () => {
     const router = useRouter();
     const pathname = usePathname();
     const { isUserLoading, isUserLoggedIn, user } = useSnapshot(AccountState);
     const { resetUserAccounts } = UserAccountsStore;
+    const { resetCategories } = CategoriesStore;
     const userInfo = { ...user };
     const signOutClickHandler = useCallback(() => {
         setIsUserLoading(true);
@@ -28,9 +30,9 @@ const Header: React.FC = () => {
             userName: '',
             imageFile: '',
             birthday: '',
-            categories: [],
             track: [],
         });
+        resetCategories();
         resetUserAccounts();
         setIsUserLoggedIn(false);
         setIsUserLoading(false);

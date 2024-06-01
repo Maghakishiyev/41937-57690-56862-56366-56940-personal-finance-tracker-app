@@ -1,16 +1,18 @@
-"use client"
-import { useEffect, useState } from "react";
-import { Add, SellOutlined } from "@mui/icons-material";
-import DeleteIcon from '@mui/icons-material/Delete';
-import EditIcon from '@mui/icons-material/Edit';
-import { useSnapshot } from "valtio";
-import { Button, IconButton, Paper, Tab, Table, TableBody, TableCell, TableContainer, TableRow, Tabs } from "@mui/material"
-import { TabPanel } from "@/components/layout/TabComponents";
-import { AccountState, ICategories, IUserState, setDataDeleteCategoriesModal, setDataEditCategoriesModal, setShowDeleteCategoriesModal, setShowEditCategoriesModal } from "@/store/UserStore";
-import AddCategoriesModal from "@/components/modals/AddEditCategories/AddCategoriesModal";
-import EditCategoriesModal from "@/components/modals/AddEditCategories/EditModal";
-import DeleteModal from "@/components/modals/AddEditCategories/DeleteModal";
+'use client';
 
+import { useEffect, useState } from 'react';
+import { Add } from '@mui/icons-material';
+import { useSnapshot } from 'valtio';
+import { Button, Tab, Tabs } from '@mui/material';
+import { TabPanel } from '@/components/layout/TabComponents';
+import CategoriesStore, {
+    ICategory,
+    ICategoryState,
+} from '@/store/CategoriesStore';
+import AddCategoriesModal from '@/components/modals/AddEditCategories/AddCategoriesModal';
+import EditCategoriesModal from '@/components/modals/AddEditCategories/EditModal';
+import DeleteModal from '@/components/modals/AddEditCategories/DeleteModal';
+import { CategoryTable } from '@/components/CategoriesTable';
 
 function a11yProps(index: number) {
     return {
@@ -18,121 +20,100 @@ function a11yProps(index: number) {
         'aria-controls': `simple-tabpanel-${index}`,
     };
 }
+
 const CategoriesPage = () => {
-
     const [tabValue, setTabValue] = useState<number>(0);
+    const [selectedCategory, setSelectedCategory] = useState<
+        ICategory | undefined
+    >(undefined);
+    const [openEditModal, setOpenEditModal] = useState<boolean>(false);
+    const [openDeleteModal, setOpenDeleteModal] = useState<boolean>(false);
     const [open, setOpen] = useState(false);
+    const { CategoriesState, fetchCategories } = CategoriesStore;
+    const { categories } = useSnapshot(CategoriesState) as ICategoryState;
 
+    useEffect(() => {
+        fetchCategories(); // Fetch categories on component mount
+    }, []);
 
-    const { user, dataEditCategoriesModal } = useSnapshot(AccountState) as IUserState;
-
-    const handleChange = (event: React.SyntheticEvent, newValue: number): void => {
+    const handleChange = (event: React.SyntheticEvent, newValue: number) => {
         setTabValue(newValue);
     };
+
+    const handleOpenAddModal = () => {
+        setOpen(true);
+    };
+
+    const handleEditCategory = (category: ICategory) => {
+        setOpenEditModal(true);
+        setSelectedCategory(category);
+    };
+
+    const handleDeleteCategory = (category: ICategory) => {
+        setOpenDeleteModal(true);
+        setSelectedCategory(category);
+    };
+
+    const handleCloseEditModal = () => {
+        setSelectedCategory(undefined);
+        setOpenEditModal(false);
+    };
+
     return (
         <section className='flex flex-col gap-y-4 items-center bg-white rounded shadow-md mx-auto my-16 px-6 py-4 max-w-max'>
-            <div className="font-semibold text-2xl">
-                Manage Categories
+            <div className='font-semibold text-2xl'>Manage Categories</div>
+            <div className='flex flex-row justify-between w-[420px]'>
+                <Tabs
+                    value={tabValue}
+                    onChange={handleChange}
+                    textColor='primary'
+                    indicatorColor='primary'
+                >
+                    <Tab label='Expense' {...a11yProps(0)} />
+                    <Tab label='Income' {...a11yProps(1)} />
+                </Tabs>
+                <Button
+                    variant='outlined'
+                    className='text-[16px] py-1.5 px-2 shadow-lg border-[#7D8395] text-black'
+                    onClick={handleOpenAddModal}
+                >
+                    Add New <Add />
+                </Button>
             </div>
-            <div className="flex flex-col items-center">
-                <div className="flex flex-row justify-between w-[420px]">
-                    <Tabs value={tabValue} onChange={handleChange} textColor="primary" indicatorColor="primary">
-                        <Tab label="Expense" {...a11yProps(0)} />
-                        <Tab label="Income" {...a11yProps(1)} />
-                    </Tabs>
-                    <Button
-                        variant="outlined"
-                        className="text-[16px] py-1.5 px-2 shadow-lg border-[#7D8395] text-black"
-                        onClick={() => setOpen(true)}
-                    >
-                        Add New
-                        <Add />
-                    </Button>
-                    <AddCategoriesModal open={open} setOpen={setOpen} />
-                    {/* <EditCategoriesModal openEditModal={openEditModal} setOpenEditModal={setOpenEditModal} /> */}
-                </div>
-                <TabPanel value={tabValue} index={0}>
-                    <TableContainer component={Paper}>
-                        <Table sx={{ minWidth: 400 }} size="small" aria-label="a dense table">
-                            <TableBody>
-                                {
-                                    user.categories.map((categories) => categories.categoryType == "0" && (
-                                        <TableRow key={categories.categoryName}>
-                                            <TableCell padding="checkbox">
-                                                <SellOutlined />
-                                            </TableCell>
-                                            <TableCell component="th" scope="row">
-                                                {categories.categoryName}
-                                            </TableCell>
-                                            <TableCell align="right">
-                                                <IconButton aria-label="edit" onClick={() => {
-                                                    const updatedUser: ICategories = {
-                                                        ...dataEditCategoriesModal,
-                                                        ...categories
-                                                    };
-                                                    setDataEditCategoriesModal(updatedUser);
-                                                    setShowEditCategoriesModal(true)
-                                                }}>
-                                                    <EditIcon color="primary" />
-                                                </IconButton>
-                                                <IconButton aria-label="delete" onClick={() => {
-                                                    setDataDeleteCategoriesModal(categories._id)
-                                                    setShowDeleteCategoriesModal(true)
-                                                }}>
-                                                    <DeleteIcon color="secondary" />
-                                                </IconButton>
-                                            </TableCell>
-                                        </TableRow>
-                                    ))
-                                }
-                            </TableBody>
-                        </Table>
-                    </TableContainer>
-                </TabPanel>
-                <TabPanel value={tabValue} index={1}>
-                    <TableContainer component={Paper}>
-                        <Table sx={{ minWidth: 400 }} size="small" aria-label="a dense table">
-                            <TableBody>
-                                {
-                                    user.categories.map((categories) => categories.categoryType == "1" && (
-                                        <TableRow key={categories._id}>
-                                            <TableCell padding="checkbox">
-                                                <SellOutlined />
-                                            </TableCell>
-                                            <TableCell component="th" scope="row">
-                                                {categories.categoryName}
-                                            </TableCell>
-                                            <TableCell align="right">
-                                                <IconButton aria-label="edit" onClick={() => {
-                                                    const updatedUser: ICategories = {
-                                                        ...dataEditCategoriesModal,
-                                                        ...categories
-                                                    };
-                                                    setDataEditCategoriesModal(updatedUser);
-                                                    setShowEditCategoriesModal(true)
-                                                }} >
-                                                    <EditIcon color="primary" />
-                                                </IconButton>
-                                                <IconButton aria-label="delete" onClick={() => {
-                                                    setDataDeleteCategoriesModal(categories._id)
-                                                    setShowDeleteCategoriesModal(true)
-                                                }}>
-                                                    <DeleteIcon color="secondary" />
-                                                </IconButton>
-                                            </TableCell>
-                                        </TableRow>
-                                    ))
-                                }
-                            </TableBody>
-                        </Table>
-                    </TableContainer>
-                </TabPanel>
-            </div>
-            <EditCategoriesModal />
-            <DeleteModal />
-
+            <TabPanel value={tabValue} index={0}>
+                <CategoryTable
+                    type='expense'
+                    categories={categories}
+                    handleEditCategory={handleEditCategory}
+                    handleDeleteCategory={handleDeleteCategory}
+                />
+            </TabPanel>
+            <TabPanel value={tabValue} index={1}>
+                <CategoryTable
+                    type='income'
+                    categories={categories}
+                    handleEditCategory={handleEditCategory}
+                    handleDeleteCategory={handleDeleteCategory}
+                />
+            </TabPanel>
+            <AddCategoriesModal open={open} setOpen={setOpen} />
+            {selectedCategory && (
+                <EditCategoriesModal
+                    open={openEditModal}
+                    category={selectedCategory}
+                    onClose={handleCloseEditModal}
+                />
+            )}
+            {selectedCategory && (
+                <DeleteModal
+                    deleteCategoryId={selectedCategory?._id}
+                    setShowDeleteModal={setOpenDeleteModal}
+                    showDeleteModal={openDeleteModal}
+                    setSelectedCategory={setSelectedCategory}
+                />
+            )}
         </section>
-    )
-}
+    );
+};
 
-export default CategoriesPage
+export default CategoriesPage;

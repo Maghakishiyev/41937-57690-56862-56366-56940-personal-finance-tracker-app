@@ -1,146 +1,181 @@
-import { useState } from "react";
-import { BoltOutlined, BorderColorOutlined, GridViewOutlined, SwapVertOutlined } from "@mui/icons-material";
-import { Box, Button, MenuItem, Modal, Select, SelectChangeEvent, TextField } from "@mui/material"
-import { useSnapshot } from "valtio";
-
+import React, { useState } from 'react';
 import {
-    setUserCategories,
-    AccountState,
-    ICategories
-} from '@/store/UserStore';
-import { StyledDiv, StyledLabel, style } from "./AddCategoriesStyles";
-import { EditUserInfoModalProps } from "./types";
-import { addCategoryToUser } from "@/app/categories/api";
-import ModalTitle from "@/components/layout/ModalTitle";
+    Box,
+    Button,
+    MenuItem,
+    Modal,
+    Select,
+    SelectChangeEvent,
+    TextField,
+} from '@mui/material';
+import {
+    BoltOutlined,
+    BorderColorOutlined,
+    GridViewOutlined,
+    SwapVertOutlined,
+} from '@mui/icons-material';
+import { useSnapshot } from 'valtio';
+import CategoriesStore, {
+    ICategoryContent,
+    CategoriesState,
+} from '@/store/CategoriesStore'; // Adjust the import path according to your project structure
+import { StyledDiv, StyledLabel, style } from './AddCategoriesStyles';
+import ModalTitle from '@/components/layout/ModalTitle';
 
+interface AddCategoriesModalProps {
+    open: boolean;
+    setOpen: (open: boolean) => void;
+}
 
-const AddCategoriesModal = ({ open, setOpen }: EditUserInfoModalProps) => {
-    const { user } = useSnapshot(AccountState);
-    const [formData, setFormData] = useState({
-        _id: "",
-        categoryName: "",
-        categoryIcon: "",
-        categoryType: "",
-        categoryDes: "",
-    })
+const AddCategoriesModal: React.FC<AddCategoriesModalProps> = ({
+    open,
+    setOpen,
+}) => {
+    const { addCategory, CategoriesState, resetErrors } = CategoriesStore;
+    const { error } = useSnapshot(CategoriesState);
+    const [formData, setFormData] = useState<ICategoryContent>({
+        name: '',
+        icon: '',
+        type: '', // 'Income' or 'Expense'
+        description: '',
+    });
     const [fieldErrors, setFieldErrors] = useState({
-        categoryName: false,
-        categoryIcon: false,
-        categoryType: false,
+        name: false,
+        icon: false,
+        type: false,
     });
 
-    const handleClose = () => {
-        setOpen(false)
-    }
+    const { loading } = useSnapshot(CategoriesState);
 
-    const handleSave = () => {
-        if (!formData.categoryName || !formData.categoryIcon || !formData.categoryType) {
-            alert("Please fill in all required fields.");
+    const handleClose = () => {
+        setOpen(false);
+    };
+
+    const handleSave = async () => {
+        if (!formData.name || !formData.icon || !formData.type) {
+            alert('Please fill in all required fields.');
             return;
         }
-        const uniqId = `${Date.now()}_${formData.categoryName}`
-        const updatedFormData = {
-            ...formData,
-            _id: uniqId
-        }
-        setUserCategories(updatedFormData);
-        addCategoryToUser(updatedFormData, user._id)
+        await addCategory(formData);
 
+        if (error) {
+            console.log('Error while adding new category', error);
+            alert(error);
+            resetErrors();
+        }
+
+        handleClose();
     };
+
     const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const { name, value } = e.target;
-        setFormData({ ...formData, [name]: value });
-        setFieldErrors({ ...fieldErrors, [name]: value.trim() === '' });
+        setFormData((prev) => ({ ...prev, [name]: value }));
+        setFieldErrors((prev) => ({ ...prev, [name]: value.trim() === '' }));
     };
+
     const handleSelectChange = (event: SelectChangeEvent<string>) => {
-        const { name, value } = event.target
-        setFormData({ ...formData, [name]: value as string });
+        const { name, value } = event.target;
+        setFormData((prev) => ({ ...prev, [name]: value?.toLowerCase() }));
+        setFieldErrors((prev) => ({ ...prev, [name]: value.trim() === '' }));
     };
+
     return (
         <Modal
-            open={open || false}
+            open={open}
             onClose={handleClose}
-            aria-labelledby="modal-modal-title"
-            aria-describedby="modal-modal-description"
+            aria-labelledby='add-category-modal-title'
+            aria-describedby='add-category-modal-description'
         >
             <Box sx={style}>
-                <div>
-                    <ModalTitle title="Add New Category" />
-                </div>
-                <div className="flex flex-col gap-4">
+                <ModalTitle title='Add New Category' />
+                <div className='flex flex-col gap-4'>
                     <StyledDiv>
-                        <StyledLabel htmlFor="date-input">
+                        <StyledLabel htmlFor='name-input'>
                             <GridViewOutlined />
                             Name
                         </StyledLabel>
                         <TextField
-                            id="categoryName"
-                            label="Please write category name"
-                            type="text"
-                            name="categoryName"
-                            error={fieldErrors.categoryName}
-                            value={formData.categoryName}
+                            id='name-input'
+                            label='Please write category name'
+                            type='text'
+                            name='name'
+                            error={fieldErrors.name}
+                            value={formData.name}
                             onChange={handleChange}
-                            fullWidth />
+                            fullWidth
+                        />
                     </StyledDiv>
                     <StyledDiv>
-                        <StyledLabel htmlFor="">
+                        <StyledLabel htmlFor='icon-input'>
                             <BoltOutlined />
                             Icon
                         </StyledLabel>
                         <TextField
-                            id="categoryIcon"
-                            label="Add custom category emoji (optional)"
-                            type="text"
-                            name="categoryIcon"
-                            error={fieldErrors.categoryIcon}
-                            value={formData.categoryIcon}
+                            id='icon-input'
+                            label='Add custom category emoji (optional)'
+                            type='text'
+                            name='icon'
+                            error={fieldErrors.icon}
+                            value={formData.icon}
                             onChange={handleChange}
-                            fullWidth />
+                            fullWidth
+                        />
                     </StyledDiv>
                     <StyledDiv>
-                        <StyledLabel htmlFor="">
+                        <StyledLabel htmlFor='type-select'>
                             <SwapVertOutlined />
                             Type
                         </StyledLabel>
                         <Select
-                            id="categoryType"
-                            name="categoryType"
-                            value={formData.categoryType}
-                            error={fieldErrors.categoryType}
-                            onChange={handleChange as any}
+                            id='type-select'
+                            name='type'
+                            value={formData.type}
+                            onChange={handleSelectChange}
+                            error={fieldErrors.type}
+                            fullWidth
                         >
-                            <MenuItem value="0">Expense</MenuItem>
-                            <MenuItem value="1">Income</MenuItem>
+                            <MenuItem value='income'>Income</MenuItem>
+                            <MenuItem value='expense'>Expense</MenuItem>
                         </Select>
                     </StyledDiv>
                     <StyledDiv>
-                        <StyledLabel htmlFor="">
+                        <StyledLabel htmlFor='description-input'>
                             <BorderColorOutlined />
                             Description
                         </StyledLabel>
-                        <TextField id="categoryDes"
-                            label="Add a description (optional)"
-                            type="text"
-                            name="categoryDes"
-                            value={formData.categoryDes}
+                        <TextField
+                            id='description-input'
+                            label='Add a description (optional)'
+                            type='text'
+                            name='description'
+                            value={formData.description}
                             onChange={handleChange}
                             fullWidth
                             multiline
-                            rows={4} />
+                            rows={4}
+                        />
                     </StyledDiv>
                 </div>
-                <div className="flex flex-row gap-2.5 items-center justify-end mt-9">
-                    <Button variant="outlined" onClick={handleClose} className="border-[#7D8395] text-[#7D8395] py-1.5 px-4">
+                <div className='flex flex-row gap-2.5 items-center justify-end mt-9'>
+                    <Button
+                        variant='outlined'
+                        onClick={handleClose}
+                        className='border-[#7D8395] text-[#7D8395] py-1.5 px-4'
+                    >
                         Cancel
                     </Button>
-                    <Button onClick={handleSave} variant="contained" className="py-1.5 px-7">
+                    <Button
+                        onClick={handleSave}
+                        variant='contained'
+                        className='py-1.5 px-7'
+                        disabled={loading}
+                    >
                         Save
                     </Button>
                 </div>
             </Box>
-        </Modal >
-    )
-}
+        </Modal>
+    );
+};
 
-export default AddCategoriesModal
+export default AddCategoriesModal;

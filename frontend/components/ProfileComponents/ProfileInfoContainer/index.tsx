@@ -1,6 +1,6 @@
 import EditUserInfoModal from '@/components/layout/EditUserInfoModal';
 import { shortenString } from '@/helpers';
-import { AccountState } from '@/store/UserStore';
+import { AccountState, IUserState } from '@/store/UserStore';
 import { Avatar } from '@mui/material';
 import Image from 'next/image';
 import { useRouter } from 'next/navigation';
@@ -16,9 +16,9 @@ const USER_INFO_FIELDS: { [key: string]: string } = {
 };
 
 export const ProfileInfoContainer: React.FC = () => {
-    const { user } = useSnapshot(AccountState);
+    const { user } = useSnapshot(AccountState) as IUserState;
     const router = useRouter();
-    const [open, setOpen] = useState(false)
+    const [open, setOpen] = useState(false);
     const defaultImagePath = '/frontend/public/default_profile_icon.png';
     const img = user.imageFile ?? defaultImagePath;
 
@@ -27,9 +27,12 @@ export const ProfileInfoContainer: React.FC = () => {
             Object.entries(user)?.map(([key, value]) => {
                 if (USER_INFO_FIELDS?.[key]) {
                     return (
-                        <span key={USER_INFO_FIELDS?.[key]} className='w-full text-left text-sm font-regular text-[#7D8395]'>
+                        <span
+                            key={USER_INFO_FIELDS?.[key]}
+                            className='w-full text-left text-sm font-regular text-[#7D8395]'
+                        >
                             {USER_INFO_FIELDS?.[key]}{' '}
-                            {value?.length > 23  
+                            {value?.length > 23
                                 ? shortenString(value, 10, 10)
                                 : value}
                         </span>
@@ -40,9 +43,8 @@ export const ProfileInfoContainer: React.FC = () => {
     );
 
     const handleEditPersonalInfo = () => {
-        setOpen(true)
-    }
-
+        setOpen(true);
+    };
 
     return (
         <div className='min-w-[280px] w-[280px] items-stretch px-4 py-8 shadow-sm border border-[#dcdcdc] bg-white rounded flex flex-col flex-grow gap-64 justify-between'>
@@ -51,7 +53,7 @@ export const ProfileInfoContainer: React.FC = () => {
                     <div className='rounded-full flex-shrink-0 w-[116px] h-[116px] overflow-clip'>
                         <Avatar
                             src={user.imageFile}
-                            alt="Profile Avatar"
+                            alt='Profile Avatar'
                             sx={{ width: 120, height: 120, marginBottom: 2 }}
                         />
                     </div>
@@ -69,7 +71,10 @@ export const ProfileInfoContainer: React.FC = () => {
                 </div>
             </div>
             <div className='w-full'>
-                <button onClick={handleEditPersonalInfo} className='w-full py-3 flex items-center justify-center text-[#2D76E9] bg-white hover:bg-[#bbd3fb] border border-[#2D76E9] rounded hover:shadow-sm'>
+                <button
+                    onClick={handleEditPersonalInfo}
+                    className='w-full py-3 flex items-center justify-center text-[#2D76E9] bg-white hover:bg-[#bbd3fb] border border-[#2D76E9] rounded hover:shadow-sm'
+                >
                     Edit Personal Info
                 </button>
                 <EditUserInfoModal open={open} setOpen={setOpen} />
