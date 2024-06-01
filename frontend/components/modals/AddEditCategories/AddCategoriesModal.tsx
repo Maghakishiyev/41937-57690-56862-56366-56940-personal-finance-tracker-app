@@ -56,7 +56,9 @@ const AddCategoriesModal: React.FC<AddCategoriesModalProps> = ({
             alert('Please fill in all required fields.');
             return;
         }
-        await addCategory(formData);
+        await addCategory(formData)?.then(() =>
+            alert('You have successfully added category')
+        );
 
         if (error) {
             console.log('Error while adding new category', error);

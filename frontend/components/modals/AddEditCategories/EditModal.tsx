@@ -40,7 +40,9 @@ const EditCategoriesModal: React.FC<EditCategoriesModalProps> = ({
     };
 
     const handleSave = async () => {
-        await updateCategory(editedCategory);
+        await updateCategory(editedCategory)?.then(() =>
+            alert('You have successfully saved category')
+        );
 
         if (error) {
             console.log('Error while updating new category', error);

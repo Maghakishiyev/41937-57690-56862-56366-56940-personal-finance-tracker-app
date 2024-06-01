@@ -97,6 +97,14 @@ const Header: React.FC = () => {
                                     <span className='absolute left-0 bottom-0 h-0.5 w-full bg-white'></span>
                                 )}
                             </Link>
+                            <Link className='relative' href='/stats'>
+                                <span className='text-white text-lg cursor-pointer'>
+                                    Stats
+                                </span>
+                                {pathname == '/stats' && (
+                                    <span className='absolute left-0 bottom-0 h-0.5 w-full bg-white'></span>
+                                )}
+                            </Link>
                         </div>
                     )}
                 </div>

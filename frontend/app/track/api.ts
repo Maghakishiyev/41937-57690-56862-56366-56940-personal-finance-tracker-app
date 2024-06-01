@@ -6,15 +6,24 @@ const API_BASE_URL = 'http://localhost:8080/api/tracks'; // Replace with your ac
 type TGetTracksProsps = {
     type?: string;
     category?: string;
+    month?: string;
+    year?: string;
 };
 
-export const getTracks = async ({ type, category }: TGetTracksProsps) => {
+export const getTracks = async ({
+    type,
+    category,
+    month,
+    year,
+}: TGetTracksProsps) => {
     try {
         const params = new URLSearchParams();
         const token = localStorage.getItem('token');
 
         if (type) params.append('type', type);
         if (category) params.append('category', category);
+        if (month) params.append('month', month.toString());
+        if (year) params.append('year', year.toString());
 
         const response = await axios.get(`${API_BASE_URL}/list`, {
             params: params,

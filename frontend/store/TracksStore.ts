@@ -10,7 +10,7 @@ export interface ITrackContent {
     date: string;
     amount: string;
     type: string; // 'Income' or 'Expense'
-    category?: string;
+    category: string;
     account?: string;
     note?: string;
     from?: string;
@@ -49,14 +49,18 @@ const TrackStore = {
     fetchTracks: async function ({
         type,
         category,
+        month,
+        year,
     }: {
         type?: string;
         category?: string;
+        month?: string;
+        year?: string;
     }) {
         TrackState.loading = true;
         TrackState.error = null;
         try {
-            const data = await getTracks({ category, type });
+            const data = await getTracks({ category, type, month, year });
             TrackState.tracks = data; // Assuming the API returns an array of tracks
             TrackState.loading = false;
         } catch (error: any) {

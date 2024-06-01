@@ -149,7 +149,9 @@ const TransactionForm: React.FC = () => {
             ...flowsData,
             type: getTabType(tabValue)?.toLowerCase(),
         };
-        await addTrack(updatedFormData);
+        await addTrack(updatedFormData)?.then(() =>
+            alert('You have successfully saved ' + getTabType(tabValue)?.toLowerCase())
+        );
 
         if (tracksError) {
             console.log('Error while tracking expense', tracksError);

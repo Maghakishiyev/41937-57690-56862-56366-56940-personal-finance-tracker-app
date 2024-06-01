@@ -8,7 +8,7 @@ const trackSchema = new Schema(
             ref: 'User',
             required: true,
         },
-        date: { type: String, required: true },
+        date: { type: Date, required: true },
         amount: { type: String, required: true },
         type: { type: String, required: true }, // Assuming this is either 'Expense' or 'Income'
         category: { type: String, required: false },
