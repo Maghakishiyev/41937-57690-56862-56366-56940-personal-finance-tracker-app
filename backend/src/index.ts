@@ -3,9 +3,10 @@ import * as dotenv from 'dotenv';
 import cors from 'cors';
 import helmet from 'helmet';
 import { dbConnection } from './db';
-import authRoutes from '../routes/authRoutes';
+import authRoutes from '../routes/AuthRoutes';
 import uploadImg from '../routes/uploadImg';
-import accountRoutes from '../routes/accountRoutes';
+import accountRoutes from '../routes/AccountRoutes';
+import categoryRoutes from '../routes/CategoryRoutes';
 
 dotenv.config();
 
@@ -34,6 +35,7 @@ app.get('/', (req: Request, res: Response) => {
 app.use('/api/auth', authRoutes);
 app.use('/upload', uploadImg);
 app.use('/api/accounts', accountRoutes);
+app.use('/api/categories', categoryRoutes);
 
 app.listen(parseInt(PORT, 10), () => {
     console.log(`Server is listening on port ${PORT}`);

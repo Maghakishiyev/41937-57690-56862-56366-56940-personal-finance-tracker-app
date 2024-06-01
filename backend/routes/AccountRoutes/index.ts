@@ -1,7 +1,7 @@
 // routes/account.routes.ts
 import express, { Request, Response } from 'express';
-import { Account } from '../models/account.model';
-import { ReqWithUser, authCheck } from '../middleware/authCheck';
+import { Account } from '../../models/account/model';
+import { ReqWithUser, authCheck } from '../../middleware/authCheck';
 
 const router = express.Router();
 
@@ -58,7 +58,7 @@ router.put(
                 userId,
                 name,
                 emoji,
-                description
+                description,
             });
             if (existingAccount) {
                 return res.status(409).json({

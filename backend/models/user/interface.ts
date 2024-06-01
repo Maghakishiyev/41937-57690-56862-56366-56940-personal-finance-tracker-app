@@ -1,11 +1,3 @@
-export interface ICategory {
-    _id: string;
-    categoryName: string;
-    categoryIcon: string;
-    categoryType: string;
-    categoryDescription?: string;
-}
-
 export interface ITrack {
     _id: string;
     account?: string;
@@ -26,7 +18,6 @@ export interface IUser {
     userName: string;
     birthday: string;
     imageFile: string;
-    password: string
-    categories: ICategory[]
-    tracks: ITrack[]
+    password: string;
+    tracks: ITrack[];
 }
