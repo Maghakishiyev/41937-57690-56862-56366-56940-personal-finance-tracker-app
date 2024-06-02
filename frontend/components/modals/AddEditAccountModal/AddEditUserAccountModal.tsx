@@ -59,9 +59,13 @@ const AddUserAccountModal = ({
         }
 
         if (account) {
-            await updateAccount({ ...account, ...formData });
+            await updateAccount({ ...account, ...formData })?.then(() =>
+                alert('You have successfully updated account ')
+            );
         } else {
-            await addAccount(formData);
+            await addAccount(formData)?.then(() =>
+                alert('You have successfully added account')
+            );
         }
 
         if (error) {

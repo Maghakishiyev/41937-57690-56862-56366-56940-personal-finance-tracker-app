@@ -18,6 +18,15 @@ export interface ICategory extends ICategoryContent {
     userId: string;
 }
 
+export interface CategorySummary {
+    icon?: string;
+    name: string;
+    category: string;
+    totalAmount: number;
+    percentage?: number; // This will be calculated later
+    color?: string;
+}
+
 export interface ICategoryState {
     categories: ICategory[];
     loading: boolean;
