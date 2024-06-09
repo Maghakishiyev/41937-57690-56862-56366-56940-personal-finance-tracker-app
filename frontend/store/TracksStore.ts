@@ -4,6 +4,7 @@ import {
     addTrack,
     updateTrack,
     deleteTrack,
+    getMonthlyTotals,
 } from '../app/track/api';
 
 export interface ITrackContent {
@@ -18,6 +19,12 @@ export interface ITrackContent {
     description?: string;
 }
 
+export interface IMonthlyTotals {
+    expense?: string;
+    income?: string;
+    savings?: string; // Assuming you calculate savings as income - expenses
+}
+
 export interface ITrack extends ITrackContent {
     _id: string;
     userId: string;
@@ -25,12 +32,14 @@ export interface ITrack extends ITrackContent {
 
 export interface ITrackState {
     tracks: ITrack[];
+    monthlyTotals: IMonthlyTotals;
     loading: boolean;
     error: string | null;
 }
 
 export const TrackState = proxy<ITrackState>({
     tracks: [],
+    monthlyTotals: {},
     loading: false,
     error: null,
 });
@@ -105,6 +114,23 @@ const TrackStore = {
             TrackState.tracks = TrackState.tracks.filter(
                 (track) => track._id !== trackId
             );
+            TrackState.loading = false;
+        } catch (error: any) {
+            TrackState.error = error.message;
+            TrackState.loading = false;
+        }
+    },
+    fetchMonthlyTotals: async function ({
+        month,
+        year,
+    }: {
+        month: number;
+        year: number;
+    }) {
+        TrackState.loading = true;
+        try {
+            const totals = await getMonthlyTotals({ month, year });
+            TrackState.monthlyTotals = totals;
             TrackState.loading = false;
         } catch (error: any) {
             TrackState.error = error.message;

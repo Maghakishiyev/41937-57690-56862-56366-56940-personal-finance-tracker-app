@@ -110,8 +110,8 @@ const TransactionForm: React.FC = () => {
 
     const incomeDateISO = (e: React.ChangeEvent<HTMLInputElement>) => {
         const { name, value } = e.target;
-        const birthday = value.substring(0, 10);
-        setFlowsData({ ...flowsData, [name]: birthday });
+        const date = value.substring(0, 10);
+        setFlowsData({ ...flowsData, [name]: date });
         setFieldErrors({ ...fieldErrors, [name]: value.trim() === '' });
     };
 
@@ -140,7 +140,13 @@ const TransactionForm: React.FC = () => {
     };
 
     const handleSave = async () => {
-        if (!flowsData.account || !flowsData.amount || !flowsData.date) {
+        if (
+            (tabValue < 2
+                ? !flowsData.account
+                : !flowsData.from || !flowsData?.to) ||
+            !flowsData.amount ||
+            !flowsData.date
+        ) {
             alert('Please fill in all required fields.');
             return;
         }
@@ -150,7 +156,10 @@ const TransactionForm: React.FC = () => {
             type: getTabType(tabValue)?.toLowerCase(),
         };
         await addTrack(updatedFormData)?.then(() =>
-            alert('You have successfully saved ' + getTabType(tabValue)?.toLowerCase())
+            alert(
+                'You have successfully saved ' +
+                    getTabType(tabValue)?.toLowerCase()
+            )
         );
 
         if (tracksError) {

@@ -19,7 +19,7 @@ export const columns: GridColDef[] = [
         flex: 0.1,
         disableColumnMenu: true,
         cellClassName: (params: GridCellParams<any>) => {
-            const dataValue = Number((params?.value as string).split(' ')?.[0]);
+            const dataValue = Number((params?.value as string).split('$')?.[0]);
             return clsx('text-sm font-normal', {
                 'text-[#FF0000]': dataValue < 0,
                 'text-[#27B867]': dataValue > 0,
@@ -58,69 +58,3 @@ export interface IRows {
     date: string;
     description?: string;
 }
-
-export const rows: IRows[] = [
-    {
-        id: 1,
-        category: 'Category A',
-        amount: '+10.8 $',
-        date: '10.04.2020',
-        description: 'Lorom Ipsum Dolor sit amert',
-    },
-    {
-        id: 2,
-        category: 'Category A',
-        amount: '+10.8 $',
-        date: '10.04.2020',
-        description: 'Lorom Ipsum Dolor sit amert',
-    },
-    {
-        id: 3,
-        category: 'Category A',
-        amount: '-10.8 $',
-        date: '10.04.2020',
-        description: 'Lorom Ipsum Dolor sit amert',
-    },
-    {
-        id: 4,
-        category: 'Category B',
-        amount: '+10.8 $',
-        date: '10.04.2020',
-        description: 'Lorom Ipsum Dolor sit amert',
-    },
-    {
-        id: 5,
-        category: 'Category C',
-        amount: '+10.8 $',
-        date: '10.04.2020',
-        description: 'Lorom Ipsum Dolor sit amert',
-    },
-    {
-        id: 6,
-        category: 'Category A',
-        amount: '-10.8 $',
-        date: '10.04.2020',
-        description: 'Lorom Ipsum Dolor sit amert',
-    },
-    {
-        id: 7,
-        category: 'Category B',
-        amount: '-10.8 $',
-        date: '10.04.2020',
-        description: 'Lorom Ipsum Dolor sit amert',
-    },
-    {
-        id: 8,
-        category: 'Category C',
-        amount: '+10.8 $',
-        date: '10.04.2020',
-        description: 'Lorom Ipsum Dolor sit amert',
-    },
-    {
-        id: 9,
-        category: 'Category C',
-        amount: '+10.8 $',
-        date: '10.04.2020',
-        description: 'Lorom Ipsum Dolor sit amert',
-    },
-];

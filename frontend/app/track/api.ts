@@ -60,7 +60,7 @@ export const updateTrack = async (track: ITrack) => {
         const token = localStorage.getItem('token');
 
         const response = await axios.put(
-            `${API_BASE_URL}/update/${track._id}`,
+            `${API_BASE_URL}/${track._id}`,
             track,
             {
                 headers: {
@@ -80,7 +80,7 @@ export const deleteTrack = async (trackId: string) => {
         const token = localStorage.getItem('token');
 
         const response = await axios.delete(
-            `${API_BASE_URL}/delete/${trackId}`,
+            `${API_BASE_URL}/${trackId}`,
             {
                 headers: {
                     Authorization: `Bearer ${token}`,
@@ -90,6 +90,26 @@ export const deleteTrack = async (trackId: string) => {
         return response.data; // Assuming the server sends back some confirmation
     } catch (error) {
         console.error('Failed to delete track:', error);
+        throw error;
+    }
+};
+
+export const getMonthlyTotals = async ({
+    month,
+    year,
+}: {
+    month: number;
+    year: number;
+}) => {
+    const token = localStorage.getItem('token');
+    try {
+        const response = await axios.get(`${API_BASE_URL}/monthly-totals`, {
+            params: { month, year },
+            headers: { Authorization: `Bearer ${token}` },
+        });
+        return response.data;
+    } catch (error) {
+        console.error('Failed to fetch monthly totals:', error);
         throw error;
     }
 };

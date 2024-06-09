@@ -37,7 +37,7 @@ export const ExpenseCard: React.FC<IExpenseCardProps> = ({
                 <span className='font-semibold text-2xl text-black'>
                     ${expenseAmount}
                 </span>
-                <span
+                {/* <span
                     className={
                         'px-1 py-0.5 rounded-sm bg-opacity-20 text-[10px] leading-3 font-semibold ' +
                         (isExpensePositive
@@ -47,7 +47,7 @@ export const ExpenseCard: React.FC<IExpenseCardProps> = ({
                 >
                     {isExpensePositive && '+'}
                     {expensePercentage}%
-                </span>
+                </span> */}
             </div>
             <div className='text-sm font-semibold text-black'>
                 {expenseDescription}

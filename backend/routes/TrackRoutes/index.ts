@@ -2,6 +2,7 @@
 import express, { Response } from 'express';
 import { Track } from '../../models/track/model';
 import { ReqWithUser, authCheck } from '../../middleware/authCheck';
+import mongoose from 'mongoose';
 
 const router = express.Router();
 
@@ -92,5 +93,51 @@ router.delete('/:id', authCheck, async (req: ReqWithUser, res: Response) => {
         res.status(500).json({ message: 'Error deleting track', error });
     }
 });
+
+// Add a route to get monthly totals
+router.get(
+    '/monthly-totals',
+    authCheck,
+    async (req: ReqWithUser, res: Response) => {
+        const userId = req?.user?.userId; // Assuming userId is correctly populated
+        const { month, year }: any = req.query;
+
+        const startMonth = parseInt(month, 10); // Convert month to zero-indexed integer
+        const startYear = parseInt(year, 10); // Ensure year is an integer
+
+        const startDate = new Date(startYear, startMonth, 1);
+        const endDate = new Date(startYear, startMonth + 1, 0);
+
+        try {
+            const totals = await Track.aggregate([
+                {
+                    $match: {
+                        userId: new mongoose.Types.ObjectId(userId), // Ensure userId is an ObjectId
+                        date: { $gte: startDate, $lte: endDate },
+                    },
+                },
+                {
+                    $group: {
+                        _id: '$type',
+                        total: { $sum: { $toDecimal: '$amount' } },
+                    },
+                },
+            ]);
+
+            const results = totals.reduce((acc, curr) => {
+                acc[curr._id] = parseFloat(curr.total.toString()); // Convert Decimal128 to number
+                return acc;
+            }, {});
+
+            res.json(results);
+        } catch (error) {
+            console.error('Error retrieving monthly totals', error);
+            res.status(500).json({
+                message: 'Error retrieving monthly totals',
+                error,
+            });
+        }
+    }
+);
 
 export default router;
