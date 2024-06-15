@@ -183,11 +183,12 @@ const TransactionForm: React.FC = () => {
             </Box>
             <TabPanel value={tabValue} index={0}>
                 <StyledDiv>
-                    <StyledLabel htmlFor='date-input'>
+                    <StyledLabel htmlFor='date'>
                         <CalendarMonthOutlined />
                         Date
                     </StyledLabel>
                     <TextField
+                        data-testid='date'
                         id='date'
                         type='date'
                         name='date'
@@ -197,12 +198,12 @@ const TransactionForm: React.FC = () => {
                     />
                 </StyledDiv>
                 <StyledDiv>
-                    <StyledLabel htmlFor=''>
+                    <StyledLabel htmlFor='amount'>
                         <MonetizationOnOutlined />
                         Amount
                     </StyledLabel>
                     <TextField
-                        label='Amount'
+                        label='amount'
                         type='number'
                         name='amount'
                         value={flowsData.amount}
@@ -211,11 +212,12 @@ const TransactionForm: React.FC = () => {
                     />
                 </StyledDiv>
                 <StyledDiv>
-                    <StyledLabel htmlFor=''>
+                    <StyledLabel htmlFor='category'>
                         <GridViewOutlined />
                         Category
                     </StyledLabel>
                     <Select
+                        label='category'
                         id='category'
                         name='category'
                         value={flowsData.category}
@@ -239,7 +241,7 @@ const TransactionForm: React.FC = () => {
                     </Select>
                 </StyledDiv>
                 <StyledDiv>
-                    <StyledLabel htmlFor=''>
+                    <StyledLabel htmlFor='account'>
                         <PeopleAltOutlined />
                         Account
                     </StyledLabel>
@@ -264,7 +266,7 @@ const TransactionForm: React.FC = () => {
                     </Select>
                 </StyledDiv>
                 <StyledDiv>
-                    <StyledLabel htmlFor=''>
+                    <StyledLabel htmlFor='note'>
                         <CreateOutlined />
                         Note
                     </StyledLabel>
@@ -279,7 +281,7 @@ const TransactionForm: React.FC = () => {
                     />
                 </StyledDiv>
                 <StyledDiv>
-                    <StyledLabel htmlFor=''>
+                    <StyledLabel htmlFor='description'>
                         <BorderColorOutlined />
                         Description
                     </StyledLabel>
@@ -328,7 +330,7 @@ const TransactionForm: React.FC = () => {
             </TabPanel>
             <TabPanel value={tabValue} index={1}>
                 <StyledDiv>
-                    <StyledLabel htmlFor='date-input'>
+                    <StyledLabel htmlFor='date'>
                         <CalendarMonthOutlined />
                         Date
                     </StyledLabel>
@@ -342,12 +344,12 @@ const TransactionForm: React.FC = () => {
                     />
                 </StyledDiv>
                 <StyledDiv>
-                    <StyledLabel htmlFor=''>
+                    <StyledLabel htmlFor='amount'>
                         <MonetizationOnOutlined />
                         Amount
                     </StyledLabel>
                     <TextField
-                        label='Amount'
+                        label='amount'
                         type='number'
                         name='amount'
                         onChange={handleIncomeChange}
@@ -356,7 +358,7 @@ const TransactionForm: React.FC = () => {
                     />
                 </StyledDiv>
                 <StyledDiv>
-                    <StyledLabel htmlFor=''>
+                    <StyledLabel htmlFor='category'>
                         <GridViewOutlined />
                         Category
                     </StyledLabel>
@@ -384,7 +386,7 @@ const TransactionForm: React.FC = () => {
                     </Select>
                 </StyledDiv>
                 <StyledDiv>
-                    <StyledLabel htmlFor=''>
+                    <StyledLabel htmlFor='account'>
                         <PeopleAltOutlined />
                         Account
                     </StyledLabel>
@@ -409,7 +411,7 @@ const TransactionForm: React.FC = () => {
                     </Select>
                 </StyledDiv>
                 <StyledDiv>
-                    <StyledLabel htmlFor=''>
+                    <StyledLabel htmlFor='note'>
                         <CreateOutlined />
                         Note
                     </StyledLabel>
@@ -424,7 +426,7 @@ const TransactionForm: React.FC = () => {
                     />
                 </StyledDiv>
                 <StyledDiv>
-                    <StyledLabel htmlFor=''>
+                    <StyledLabel htmlFor='description'>
                         <BorderColorOutlined />
                         Description
                     </StyledLabel>
@@ -473,7 +475,7 @@ const TransactionForm: React.FC = () => {
             </TabPanel>
             <TabPanel value={tabValue} index={2}>
                 <StyledDiv>
-                    <StyledLabel htmlFor='date-input'>
+                    <StyledLabel htmlFor='date'>
                         <CalendarMonthOutlined />
                         Date
                     </StyledLabel>
@@ -487,12 +489,12 @@ const TransactionForm: React.FC = () => {
                     />
                 </StyledDiv>
                 <StyledDiv>
-                    <StyledLabel htmlFor=''>
+                    <StyledLabel htmlFor='amount'>
                         <MonetizationOnOutlined />
                         Amount
                     </StyledLabel>
                     <TextField
-                        label='Amount'
+                        label='amount'
                         type='number'
                         name='amount'
                         onChange={handleIncomeChange}
@@ -501,7 +503,7 @@ const TransactionForm: React.FC = () => {
                     />
                 </StyledDiv>
                 <StyledDiv>
-                    <StyledLabel htmlFor=''>
+                    <StyledLabel htmlFor='from'>
                         <PeopleAltOutlined />
                         From
                     </StyledLabel>
@@ -526,7 +528,7 @@ const TransactionForm: React.FC = () => {
                     </Select>
                 </StyledDiv>
                 <StyledDiv>
-                    <StyledLabel htmlFor=''>
+                    <StyledLabel htmlFor='to'>
                         <PeopleAltOutlined />
                         To
                     </StyledLabel>
@@ -551,7 +553,7 @@ const TransactionForm: React.FC = () => {
                     </Select>
                 </StyledDiv>
                 <StyledDiv>
-                    <StyledLabel htmlFor=''>
+                    <StyledLabel htmlFor='note'>
                         <CreateOutlined />
                         Note
                     </StyledLabel>
@@ -566,7 +568,7 @@ const TransactionForm: React.FC = () => {
                     />
                 </StyledDiv>
                 <StyledDiv>
-                    <StyledLabel htmlFor=''>
+                    <StyledLabel htmlFor='description'>
                         <BorderColorOutlined />
                         Description
                     </StyledLabel>

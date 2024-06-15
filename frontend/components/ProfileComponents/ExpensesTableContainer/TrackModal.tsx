@@ -123,11 +123,12 @@ const TrackModal: React.FC<TrackModalProps> = ({
 
                     {trackData.type !== 'transfer' && (
                         <>
-                            <StyledLabel>
+                            <StyledLabel htmlFor='category'>
                                 <GridViewOutlined /> Category
                             </StyledLabel>
                             <Select
                                 name='category'
+                                id='category'
                                 value={trackData.category}
                                 onChange={handleSelectChange as any}
                                 fullWidth
@@ -143,11 +144,12 @@ const TrackModal: React.FC<TrackModalProps> = ({
                                 ))}
                             </Select>
 
-                            <StyledLabel>
+                            <StyledLabel htmlFor='account'>
                                 <PeopleAltOutlined /> Account
                             </StyledLabel>
                             <Select
                                 name='account'
+                                id='account'
                                 value={trackData.account}
                                 onChange={handleSelectChange as any}
                                 fullWidth
@@ -158,7 +160,7 @@ const TrackModal: React.FC<TrackModalProps> = ({
                                         key={account._id}
                                         value={account._id}
                                     >
-                                       {account.emoji} {account.name}
+                                        {account.emoji} {account.name}
                                     </MenuItem>
                                 ))}
                             </Select>

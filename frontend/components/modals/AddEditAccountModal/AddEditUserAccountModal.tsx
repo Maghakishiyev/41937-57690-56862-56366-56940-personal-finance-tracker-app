@@ -114,7 +114,7 @@ const AddUserAccountModal = ({
                         />
                     </StyledDiv>
                     <StyledDiv>
-                        <StyledLabel htmlFor=''>
+                        <StyledLabel htmlFor='emoji'>
                             <BoltOutlined />
                             Icon
                         </StyledLabel>

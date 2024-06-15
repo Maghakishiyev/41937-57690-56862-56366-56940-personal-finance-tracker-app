@@ -25,6 +25,7 @@ export const ExpenseCard: React.FC<IExpenseCardProps> = ({
         <div className='flex flex-col items-start gap-6 min-w-[320px] bg-[#E6E9ED] bg-opacity-75 rounded-lg px-2.5 py-2'>
             <div className='flex items-center gap-1'>
                 <span
+                    role='indicator'
                     className={
                         'w-2 h-2 flex-shrink-0 rounded-full ' +
                         expenseIndicatorBgClassName

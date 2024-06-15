@@ -124,12 +124,12 @@ const AddCategoriesModal: React.FC<AddCategoriesModalProps> = ({
                         />
                     </StyledDiv>
                     <StyledDiv>
-                        <StyledLabel htmlFor='type-select'>
+                        <StyledLabel htmlFor='type'>
                             <SwapVertOutlined />
                             Type
                         </StyledLabel>
                         <Select
-                            id='type-select'
+                            id='type'
                             name='type'
                             value={formData.type}
                             onChange={handleSelectChange}

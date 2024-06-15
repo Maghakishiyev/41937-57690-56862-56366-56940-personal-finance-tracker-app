@@ -1,5 +1,4 @@
 import PlusIcon from '../icons/PlusIcon';
-import graph from '../../public/component2.png';
 import Image from 'next/image';
 import VectorIcon from '../icons/VectorIcon';
 import Link from 'next/link';
@@ -102,7 +101,7 @@ export const MainSection = () => {
                             className='w-full h-full '
                             width={612}
                             height={320}
-                            src={graph}
+                            src={'/component2.png'}
                             alt='graph'
                         />
                     </div>
