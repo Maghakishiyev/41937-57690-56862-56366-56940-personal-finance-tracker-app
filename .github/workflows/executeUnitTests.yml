@@ -12,23 +12,19 @@ jobs:
 
         strategy:
             matrix:
-                node-version: [16.x]
+                node-version: [16.x] # Adjust this as necessary
 
         steps:
             - uses: actions/checkout@v3
-            - name: Use Node.js ${{ matrix.node-version }}
+            - name: Set up Node.js ${{ matrix.node-version }}
               uses: actions/setup-node@v3
               with:
                   node-version: ${{ matrix.node-version }}
-                  cache: 'npm'
-
-            - name: Check root directory
-              run: ls -la
+                  # Remove cache option here to prevent it from failing before entering directories
 
             - name: Install dependencies (Backend)
               run: |
                   cd backend
-                  ls -la  # This will list files in the backend directory to ensure package-lock.json is present
                   npm install
             - name: Run backend tests
               run: |
@@ -38,7 +34,6 @@ jobs:
             - name: Install dependencies (Frontend)
               run: |
                   cd frontend
-                  ls -la  # This will list files in the frontend directory to ensure package-lock.json is present
                   npm install
             - name: Run frontend tests
               run: |
