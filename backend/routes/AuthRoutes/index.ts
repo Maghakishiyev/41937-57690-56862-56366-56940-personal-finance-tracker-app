@@ -16,9 +16,11 @@ const JWT_SECRET = config.jwt_secret;
 
 router.post('/signin', async (req: Request, res: Response) => {
     const { email, password } = req.body;
-
+    console.log('Received request', email, password);
     try {
+        
         const user = await User.findOne({ email });
+        console.log("User is", user);
         if (!user) {
             return res
                 .status(401)

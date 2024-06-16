@@ -12,6 +12,7 @@ import trackRoutes from '../routes/TrackRoutes';
 dotenv.config();
 
 const PORT = process.env.PORT;
+
 if (!PORT) {
     console.error('No port value specified in .env...');
     process.exit(1);
@@ -30,7 +31,7 @@ app.use(cors());
 app.use(helmet());
 
 app.get('/', (req: Request, res: Response) => {
-    res.json({ message: 'Hello from Express and TypeScript!' });
+    res.json({ message: 'Hello from Express and TypeScript!' + PORT });
 });
 
 app.use('/api/auth', authRoutes);
