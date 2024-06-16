@@ -6,9 +6,12 @@
     "scripts": {
         "dev": "ts-node-dev --pretty --respawn ./src/index.ts",
         "start": "ts-node src/index.ts",
+        "start:dist": "node dist/src/index.js",
         "build": "tsc",
         "test": "jest",
-        "test:watch": "jest --watch"
+        "test:watch": "jest --watch",
+        "typecheck": "tsc --noEmit",
+        "vercel-build": "echo hello!"
     },
     "keywords": [],
     "author": "Maghakishiyev",

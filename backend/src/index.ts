@@ -17,7 +17,7 @@ if (!PORT) {
     process.exit(1);
 }
 
-export const app: Application = express();
+const app: Application = express();
 
 dbConnection().catch((error) => {
     console.error('Failed to connect to MongoDB', error);
@@ -42,3 +42,5 @@ app.use('/api/tracks', trackRoutes);
 app.listen(parseInt(PORT, 10), () => {
     console.log(`Server is listening on port ${PORT}`);
 });
+
+export default app;
