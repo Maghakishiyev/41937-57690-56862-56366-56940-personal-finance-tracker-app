@@ -33,8 +33,8 @@ describe('Config Tests', () => {
         process.env.MONGO_URI = 'mongodb://localhost:27017/test';
         process.env.BUCKET_NAME = 'mybucket';
         process.env.BUCKET_REGION = 'us-east-1';
-        process.env.AWS_ACCESS_KEY = 'AKIAIOSFODNN7EXAMPLE';
-        process.env.AWS_SECRET_KEY = 'wJalrXUtnFEMI/K7MDENG/bPxRfiCYEXAMPLEKEY';
+        process.env.AWS_KEY = 'AKIAIOSFODNN7EXAMPLE';
+        process.env.AWS_SECRET = 'wJalrXUtnFEMI/K7MDENG/bPxRfiCYEXAMPLEKEY';
 
         const config = require('.').default;
 

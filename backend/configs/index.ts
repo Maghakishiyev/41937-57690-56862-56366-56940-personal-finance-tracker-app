@@ -17,8 +17,8 @@ const config: Config = {
     mongo_uri: `${process.env.MONGO_URI}`,
     bucket_name: `${process.env.BUCKET_NAME}`,
     bucket_region: `${process.env.BUCKET_REGION}`,
-    aws_access_key: `${process.env.AWS_ACCESS_KEY}`,
-    aws_secret_key: `${process.env.AWS_SECRET_KEY}`,
+    aws_access_key: `${process.env.AWS_KEY}`,
+    aws_secret_key: `${process.env.AWS_SECRET}`,
 };
 
 export default config;
