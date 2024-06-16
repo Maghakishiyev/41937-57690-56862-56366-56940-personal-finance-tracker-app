@@ -42,3 +42,15 @@ app.use('/api/tracks', trackRoutes);
 app.listen(parseInt(PORT, 10), () => {
     console.log(`Server is listening on port ${PORT}`);
 });
+
+app.use(express.json());
+
+// Define your routes as usual
+app.get('/api', (req, res) => {
+    res.send('Hello from Express on Vercel!');
+});
+
+// Vercel's Node.js runtime expects to export a function
+module.exports = (req: any, res: any) => {
+    return app(req, res);
+};
