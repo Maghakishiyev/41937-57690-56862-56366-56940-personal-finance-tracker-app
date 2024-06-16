@@ -228,11 +228,14 @@ export default function StatsPage() {
                         No Data Available
                     </h1>
                     <p className='text-gray-600 mb-4'>
-                        You haven't tracked any{' '}
+                        You haven&apos;t tracked any{' '}
                         {tabValue === 0 ? 'expenses' : 'income'} for{' '}
                         {months[selectedMonth]} {selectedYear}.
                     </p>
-                    <Link href={'/track'} className='px-6 py-2 rounded-lg text-white bg-blue-500 hover:bg-blue-600 transition duration-300'>
+                    <Link
+                        href={'/track'}
+                        className='px-6 py-2 rounded-lg text-white bg-blue-500 hover:bg-blue-600 transition duration-300'
+                    >
                         Add {tabValue === 0 ? 'Expense' : 'Income'}
                     </Link>
                 </div>

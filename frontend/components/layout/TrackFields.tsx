@@ -254,7 +254,7 @@ const TransactionForm: React.FC = () => {
                     >
                         {accounts &&
                             accounts.map((account) => (
-                                <MenuItem value={account._id}>
+                                <MenuItem key={account._id} value={account._id}>
                                     <div className='w-full flex items-center justify-start gap-3'>
                                         <span>{account.emoji}</span>
                                         <span className='text-base text-black font-semibold'>
@@ -399,7 +399,7 @@ const TransactionForm: React.FC = () => {
                     >
                         {accounts &&
                             accounts.map((account) => (
-                                <MenuItem value={account._id}>
+                                <MenuItem key={account._id} value={account._id}>
                                     <div className='w-full flex items-center justify-start gap-3'>
                                         <span>{account.emoji}</span>
                                         <span className='text-base text-black font-semibold'>
@@ -516,7 +516,7 @@ const TransactionForm: React.FC = () => {
                     >
                         {accounts &&
                             accounts.map((account) => (
-                                <MenuItem value={account._id}>
+                                <MenuItem key={account._id} value={account._id}>
                                     <div className='w-full flex items-center justify-start gap-3'>
                                         <span>{account.emoji}</span>
                                         <span className='text-base text-black font-semibold'>
@@ -541,7 +541,7 @@ const TransactionForm: React.FC = () => {
                     >
                         {accounts &&
                             accounts.map((account) => (
-                                <MenuItem value={account._id}>
+                                <MenuItem key={account._id} value={account._id}>
                                     <div className='w-full flex items-center justify-start gap-3'>
                                         <span>{account.emoji}</span>
                                         <span className='text-base text-black font-semibold'>

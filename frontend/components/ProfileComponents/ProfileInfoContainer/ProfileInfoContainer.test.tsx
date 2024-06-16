@@ -9,11 +9,14 @@ jest.mock('valtio', () => ({
 }));
 
 // Mock the EditUserInfoModal component
-jest.mock('@/components/layout/EditUserInfoModal', () => (props: any) => (
-    <div data-testid='edit-user-info-modal' {...props}>
-        EditUserInfoModal
-    </div>
-));
+jest.mock('@/components/layout/EditUserInfoModal', () => (props: any) => {
+    const MockEditUserInfoModal = (props: any) => (
+        <div data-testid='edit-user-info-modal' {...props}>
+            EditUserInfoModal
+        </div>
+    );
+    return MockEditUserInfoModal;
+});
 
 jest.mock('@/store/UserStore', () => ({
     UserState: {
