@@ -1,7 +1,6 @@
 import axios from 'axios';
 import { ITrack, ITrackContent } from '@/store/TracksStore';
-
-const API_BASE_URL = 'http://localhost:8080/api/tracks'; // Replace with your actual backend base URL
+import { API_BASE_URL } from '../accounts/api';
 
 type TGetTracksProsps = {
     type?: string;
@@ -25,7 +24,7 @@ export const getTracks = async ({
         if (month) params.append('month', month.toString());
         if (year) params.append('year', year.toString());
 
-        const response = await axios.get(`${API_BASE_URL}/list`, {
+        const response = await axios.get(`${API_BASE_URL}/tracks/list`, {
             params: params,
             headers: {
                 Authorization: `Bearer ${token}`,
@@ -43,7 +42,7 @@ export const addTrack = async (track: ITrackContent) => {
     try {
         const token = localStorage.getItem('token');
 
-        const response = await axios.post(`${API_BASE_URL}/add`, track, {
+        const response = await axios.post(`${API_BASE_URL}/tracks/add`, track, {
             headers: {
                 Authorization: `Bearer ${token}`,
             },
@@ -60,7 +59,7 @@ export const updateTrack = async (track: ITrack) => {
         const token = localStorage.getItem('token');
 
         const response = await axios.put(
-            `${API_BASE_URL}/${track._id}`,
+            `${API_BASE_URL}/tracks/${track._id}`,
             track,
             {
                 headers: {
@@ -80,7 +79,7 @@ export const deleteTrack = async (trackId: string) => {
         const token = localStorage.getItem('token');
 
         const response = await axios.delete(
-            `${API_BASE_URL}/${trackId}`,
+            `${API_BASE_URL}/tracks/${trackId}`,
             {
                 headers: {
                     Authorization: `Bearer ${token}`,
@@ -103,10 +102,13 @@ export const getMonthlyTotals = async ({
 }) => {
     const token = localStorage.getItem('token');
     try {
-        const response = await axios.get(`${API_BASE_URL}/monthly-totals`, {
-            params: { month, year },
-            headers: { Authorization: `Bearer ${token}` },
-        });
+        const response = await axios.get(
+            `${API_BASE_URL}/tracks/monthly-totals`,
+            {
+                params: { month, year },
+                headers: { Authorization: `Bearer ${token}` },
+            }
+        );
         return response.data;
     } catch (error) {
         console.error('Failed to fetch monthly totals:', error);

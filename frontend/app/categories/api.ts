@@ -1,17 +1,20 @@
 import axios from 'axios';
 import { ICategory, ICategoryContent } from '@/store/CategoriesStore';
-
-const API_BASE_URL = 'http://localhost:8080/api/categories'; // Adjusted for category routes
+import { API_BASE_URL } from '../accounts/api';
 
 // Function to add a category to the user
 export async function addCategory(category: ICategoryContent) {
     try {
         const token = localStorage.getItem('token');
-        const response = await axios.post(`${API_BASE_URL}/add`, category, {
-            headers: {
-                Authorization: `Bearer ${token}`,
-            },
-        });
+        const response = await axios.post(
+            `${API_BASE_URL}/categories/add`,
+            category,
+            {
+                headers: {
+                    Authorization: `Bearer ${token}`,
+                },
+            }
+        );
         return response.data;
     } catch (error) {
         if (axios.isAxiosError(error)) {
@@ -29,7 +32,7 @@ export async function updateCategory(category: ICategory) {
     try {
         const token = localStorage.getItem('token');
         const response = await axios.put(
-            `${API_BASE_URL}/${category._id}`,
+            `${API_BASE_URL}/categories/${category._id}`,
             category,
             {
                 headers: {
@@ -53,14 +56,11 @@ export async function updateCategory(category: ICategory) {
 export async function deleteCategory(categoryId: string) {
     try {
         const token = localStorage.getItem('token');
-        const response = await axios.delete(
-            `${API_BASE_URL}/${categoryId}`,
-            {
-                headers: {
-                    Authorization: `Bearer ${token}`,
-                },
-            }
-        );
+        const response = await axios.delete(`${API_BASE_URL}/categories/${categoryId}`, {
+            headers: {
+                Authorization: `Bearer ${token}`,
+            },
+        });
         return response.data;
     } catch (error) {
         if (axios.isAxiosError(error)) {
@@ -78,7 +78,7 @@ export async function getCategories(type?: string) {
         const token = localStorage.getItem('token');
         const queryParams = type ? `?type=${type}` : ''; // Append type to URL if provided
         const response = await axios.get(
-            `${API_BASE_URL}/list/get${queryParams}`,
+            `${API_BASE_URL}/categories/list/get${queryParams}`,
             {
                 headers: {
                     Authorization: `Bearer ${token}`,

@@ -1,7 +1,8 @@
 import axios from 'axios';
 import { IUserAccount, IUserAccountContent } from '@/store/UserAccountsStore';
 
-const API_BASE_URL = 'http://localhost:8080/api/'; // Replace with your actual backend base URL
+export const API_BASE_URL =
+    process.env.NEXT_PUBLIC_BACKEND_URL ?? 'http://localhost:8080/api'; // Replace with your actual backend base URL
 
 export async function addAccountToUser(account: IUserAccountContent) {
     try {
