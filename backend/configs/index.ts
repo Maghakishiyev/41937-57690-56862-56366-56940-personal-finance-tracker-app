@@ -12,7 +12,7 @@ interface Config {
 }
 
 const config: Config = {
-    port: `${process.env.port}`,
+    port: `${process.env.PORT}`,
     jwt_secret: process.env.JWT_SECRET || '-|your@_@default@_@secret|-',
     mongo_uri: `${process.env.MONGO_URI}`,
     bucket_name: `${process.env.BUCKET_NAME}`,

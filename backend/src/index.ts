@@ -17,7 +17,7 @@ if (!PORT) {
     process.exit(1);
 }
 
-const app: Application = express();
+export const app: Application = express();
 
 dbConnection().catch((error) => {
     console.error('Failed to connect to MongoDB', error);
