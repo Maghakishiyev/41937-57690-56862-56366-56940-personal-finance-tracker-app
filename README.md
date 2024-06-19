@@ -44,6 +44,20 @@ cd backend
 npm install
 ```
 
+Before starting the backend you will need to create `.env` file in
+`root/backend` directory for environmental variables. This file must contain
+following values:
+
+```docker
+PORT=8080
+MONGO_URI = "mongodb uri"
+JWT_SECRET = "secret for jwt"
+AWS_ACCESS_KEY = "AWS Access key"
+AWS_SECRET_KEY = "AWS Secret key"
+BUCKET_NAME ="lab-automatization"
+BUCKET_REGION ="us-east-1"
+```
+
 Running the Backend Server To start the backend server in development mode, use
 the following command:
 
@@ -68,6 +82,14 @@ cd frontend
 npm install
 ```
 
+Before starting the frontend you will need to create `.env` file in
+`root/frontend` directory for environmental variables. This file must contain
+following values:
+
+```docker
+NEXT_PUBLIC_BACKEND_URL='http://localhost:8080/api'
+```
+
 Running the Frontend To launch the frontend in development mode, run:
 
 ```bash
@@ -84,6 +106,10 @@ This will start the frontend accessible at http://localhost:3000.
     expenses, income, and savings.
 -   Expense Tracking: Add, edit, and delete expense records to keep your
     finances in check.
+-   Category management
+-   User Account management
+-   Income/Expense account management
+-   User statistics
 
 ## License
 
